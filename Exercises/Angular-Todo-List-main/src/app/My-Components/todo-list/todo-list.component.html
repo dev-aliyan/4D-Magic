@@ -1,1 +1,5 @@
-<p>{{todo.title}}</p>
+<div class="my-3">
+    <h3 class="text-2xl">{{ todo.title }}</h3>
+    <p>{{ todo.description }}</p>
+    <button class="p-1.5 rounded-2xl bg-red-500 text-white text-xs" (click)="onClick(todo)" >Delete</button>
+</div>
