@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Todo } from '../../Todo';
+import { state } from '@angular/animations';
 
 @Component({
   selector: 'app-todo-list',
@@ -9,6 +10,9 @@ import { Todo } from '../../Todo';
 export class TodoListComponent implements OnInit {
   @Input() todo! : Todo
   @Output() todoDelete : EventEmitter<Todo> = new EventEmitter()
+  @Output() detailsToggled = new EventEmitter<boolean>();
+
+  showDescription: boolean = false;
 
   constructor() {}
 
@@ -18,5 +22,11 @@ export class TodoListComponent implements OnInit {
     this.todoDelete.emit(todo)
     console.log('Onclick Triggered')
   }
+
+  onDetailsToggled(state: boolean) {
+    this.showDescription = state;
+    this.detailsToggled.emit(state);
+  }
+
   
 }
