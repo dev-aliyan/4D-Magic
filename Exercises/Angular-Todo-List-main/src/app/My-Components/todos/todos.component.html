@@ -1,7 +1,19 @@
-<div class="flex flex-col bg-neutral-900 text-white p-10 rounded-2xl justify-center items-center">
-    <app-add-todo (todoAdd) = "addTodo($event)"></app-add-todo>
-    <h4>Your Todos</h4>
-    <div *ngFor="let todo of todos">
-        <app-todo-list [todo] = "todo" (todoDelete) = "deleteTodo($event)" ></app-todo-list>
+<div class="flex flex-col bg-neutral-800 text-white p-6 rounded-xl max-w-2xl w-full mx-auto shadow-lg">
+    <h2 class="text-2xl font-bold mb-6 text-center text-blue-400">Todo App</h2>
+    
+    <div class="mb-8 w-full">
+        <app-add-todo (todoAdd) = "addTodo($event)"></app-add-todo>
+    </div>
+    
+    <div class="w-full">
+        <h4 class="text-lg font-semibold mb-4 text-gray-300 border-b border-gray-700 pb-2">Your Todos</h4>
+        <div *ngIf="todos.length > 0 ; else noTodos" class="space-y-3">
+            <div *ngFor="let todo of todos" class="bg-neutral-700 hover:bg-neutral-600 transition-colors rounded-lg p-4">
+                <app-todo-list [todo] = "todo" (todoDelete) = "deleteTodo($event)" ></app-todo-list>
+            </div>
+        </div>
+        <ng-template #noTodos>
+            No Todos To Show
+        </ng-template>
     </div>
 </div>

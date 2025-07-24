@@ -20,7 +20,6 @@ export class AddTodoComponent implements OnInit {
 
   onSubmit() {
     const todo = {
-      sno : 8,
       title : this.title,
       description : this.description,
       active : true

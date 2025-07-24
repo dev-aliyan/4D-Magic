@@ -10,6 +10,7 @@ import { MainComponent } from './My-Components/main/main.component';
 import { TodoListComponent } from "./My-Components/todo-list/todo-list.component";
 import { AddTodoComponent } from './My-Components/add-todo/add-todo.component';
 import { FormsModule } from '@angular/forms';
+import { ShowTodoComponent } from './My-Components/show-todo/show-todo.component';
 
 @NgModule({
   declarations: [
@@ -19,13 +20,14 @@ import { FormsModule } from '@angular/forms';
     TodoFooterComponent,
     MainComponent,
     AddTodoComponent,
+    TodoListComponent,
+    ShowTodoComponent, // ✅ Move here
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    TodoListComponent,
-    FormsModule
-],
+    FormsModule // ✅ Keep modules here
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

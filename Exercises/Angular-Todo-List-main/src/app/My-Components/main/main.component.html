@@ -1,3 +1,15 @@
-<app-todo-header></app-todo-header>
-<app-todos></app-todos>
-<app-todo-footer></app-todo-footer>
+<div class="min-h-screen bg-neutral-900 text-white flex flex-col">
+    <header class="sticky top-0 z-10 bg-neutral-800 shadow-lg">
+        <app-todo-header></app-todo-header>
+    </header>
+
+    <main class="flex-1 container mx-auto px-4 py-6 max-w-3xl">
+        <app-todos></app-todos>
+    </main>
+
+    <footer class="bg-neutral-800 border-t border-neutral-700 py-4">
+        <div class="container mx-auto px-4 max-w-3xl">
+            <app-todo-footer></app-todo-footer>
+        </div>
+    </footer>
+</div>

@@ -3,7 +3,6 @@ import { Todo } from '../../Todo';
 
 @Component({
   selector: 'app-todo-list',
-  standalone: true,
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.css',
 })
@@ -19,4 +18,5 @@ export class TodoListComponent implements OnInit {
     this.todoDelete.emit(todo)
     console.log('Onclick Triggered')
   }
+  
 }
