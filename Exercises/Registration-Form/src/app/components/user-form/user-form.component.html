@@ -1,0 +1,16 @@
+<div class="bg-zinc-50 drop-shadow-md rounded-lg p-6 w-full ">
+    <h1 class="text-2xl text-center mb-4">User Registration Form</h1>
+    <form [formGroup]="registrationForm" (ngSubmit)="onFormSubmit()" class="w-3xl flex flex-col gap-4">
+        <div class="flex gap-4">
+            <input type="text" formControlName="fisrtName" placeholder="First Name" class="w-full mb-4 p-2 border rounded">  
+            <input type="text" formControlName="lastName" placeholder="Last Name" class="w-full mb-4 p-2 border rounded">
+        </div>
+        <div class="flex gap-4">
+            <input type="email" formControlName="email" placeholder="Email" class="w-full mb-4 p-2 border rounded">  
+            <input type="text" formControlName="password" placeholder="Password" class="w-full mb-4 p-2 border rounded">
+        </div>
+        <div class="flex justify-center items-center">
+            <button type="submit" [disabled]="!registrationForm.valid" [ngClass]="{'bg-blue-500' : registrationForm.valid}" class=" bg-blue-300 rounded-xl py-2 px-3 text-white">Submit</button>
+        </div>
+    </form>
+</div>
