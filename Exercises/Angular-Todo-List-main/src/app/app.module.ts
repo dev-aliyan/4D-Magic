@@ -9,7 +9,7 @@ import { TodoFooterComponent } from './My-Components/todo-footer/todo-footer.com
 import { MainComponent } from './My-Components/main/main.component';
 import { TodoListComponent } from "./My-Components/todo-list/todo-list.component";
 import { AddTodoComponent } from './My-Components/add-todo/add-todo.component';
-import { FormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ShowTodoComponent } from './My-Components/show-todo/show-todo.component';
 
 @NgModule({
@@ -21,12 +21,13 @@ import { ShowTodoComponent } from './My-Components/show-todo/show-todo.component
     MainComponent,
     AddTodoComponent,
     TodoListComponent,
-    ShowTodoComponent, // ✅ Move here
+    ShowTodoComponent, 
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule // ✅ Keep modules here
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

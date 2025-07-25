@@ -1,17 +1,25 @@
 <h4 class="text-2xl">Add a todo</h4>
-<form (ngSubmit)="onSubmit()">
+<form [formGroup]="todoForm" (ngSubmit)="onSubmit()">
   <div class="space-y-12">
     <div class="border-b border-gray-900/10 pb-12">
       <div class="col-span-full">
-        <label for="title" class="block text-sm/6 font-medium ">Todo Title</label>
+        <label for="title" class="block text-sm/6 font-medium mt-2">Todo Title</label>
         <div class="mt-2">
-          <input [(ngModel)]="title" type="text" name="title" class="block w-full text-white rounded-md bg-transparent border-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-white focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+          <input name="title" formControlName="title" type="text" name="title" class="block w-full text-white rounded-md bg-transparent border-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-white focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+          <p *ngIf="todoForm.controls.title.errors?.['required'] && todoForm.controls.title.touched" class="text-red-500 text-sm">Title is required.</p>
+          <p *ngIf="todoForm.controls.title.errors?.['minlength'] && todoForm.controls.title.touched" class="text-red-500 text-sm">Title must be {{todoForm.controls.title.errors?.['minlength'].requiredLength}} characters long.</p>
         </div>
       </div>
       <div class="col-span-full">
-        <label for="description" class="block text-sm/6 font-medium ">Todo Description</label>
+        <label for="description" class="block text-sm/6 font-medium mt-2">Todo Description</label>
         <div class="mt-2">
-          <input id="description" type="text" name="description" [(ngModel)]="description" class="block w-full rounded-md bg-transparent border-white px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-gray-300 placeholder:text-white focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+          <input type="text" name="description" formControlName="description" class="block w-full rounded-md bg-transparent border-white px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-gray-300 placeholder:text-white focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+          <p *ngIf="todoForm.controls.description.errors?.['required'] && todoForm.controls.description.touched" class="text-red-500 text-sm">
+            Description is required.
+          </p>
+          <p *ngIf="todoForm.controls.description.errors?.['minlength'] && todoForm.controls.description.touched" class="text-red-500 text-sm">
+            Description must be at least {{ todoForm.controls.description.errors?.['minlength'].requiredLength }} characters long.
+          </p>
         </div>
       </div>
       <div class="flex justify-end">
