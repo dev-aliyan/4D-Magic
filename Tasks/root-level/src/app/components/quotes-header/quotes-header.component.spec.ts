@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QouteMainComponent } from './qoute-main.component';
+import { QuotesHeaderComponent } from './quotes-header.component';
 
-describe('QouteMainComponent', () => {
-  let component: QouteMainComponent;
-  let fixture: ComponentFixture<QouteMainComponent>;
+describe('QuotesHeaderComponent', () => {
+  let component: QuotesHeaderComponent;
+  let fixture: ComponentFixture<QuotesHeaderComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [QouteMainComponent]
+      declarations: [QuotesHeaderComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(QouteMainComponent);
+    fixture = TestBed.createComponent(QuotesHeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

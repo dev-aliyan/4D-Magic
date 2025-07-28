@@ -1,10 +1,10 @@
-export class Qoute {
+export class Quotes {
     title: string
     content: string
     author: string
 
     constructor (title: string, content: string, author: string) {
-        this.title = title;
+        this.title = title ;
         this.content = content;
         this.author = author;
     }

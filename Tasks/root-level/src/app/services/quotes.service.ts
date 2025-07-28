@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class QoutesService {
-  getQoutes() {
+export class QuotesService {
+  getQuotes () {
     return [
       {
         author: "William Shakespeare",

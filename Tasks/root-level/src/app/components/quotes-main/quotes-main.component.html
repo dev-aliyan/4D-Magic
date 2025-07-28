@@ -1,0 +1,7 @@
+<div class="p-5 h-screen overflow-auto">
+    <ul class="flex flex-col gap-2" *ngFor="let quote of quotes">
+        <li class="text-2xl">{{quote.title}}</li>
+        <li>{{quote.content}}</li>
+        <li class="text-sm">{{quote.author}}</li>
+    </ul>
+</div>

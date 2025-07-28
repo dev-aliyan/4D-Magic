@@ -4,15 +4,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MainComponent } from './components/main/main.component';
-import { QouteHeaderComponent } from './components/qoute-header/qoute-header.component';
-import { QouteMainComponent } from './components/qoute-main/qoute-main.component';
+import { QuotesHeaderComponent } from './components/quotes-header/quotes-header.component';
+import { QuotesMainComponent } from './components/quotes-main/quotes-main.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MainComponent,
-    QouteHeaderComponent,
-    QouteMainComponent
+    QuotesHeaderComponent,
+    QuotesMainComponent
   ],
   imports: [
     BrowserModule,
