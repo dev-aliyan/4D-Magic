@@ -1,1 +1,8 @@
-<p>logger works!</p>
+<div (click)="LogMessage()">log action</div>
+<div *ngFor="let log of logs">
+    <ul>
+        <li>
+            {{log}}
+        </li>
+    </ul>
+</div>

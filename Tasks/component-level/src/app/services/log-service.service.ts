@@ -1,9 +1,18 @@
 import { Injectable } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class LogServiceService {
+@Injectable()
 
+export class LogServiceService {
+  logs: string[] = [];
+  
+  logMessage(message: string) {
+    const timestamp = new Date().toISOString();
+    this.logs.push(`${timestamp} - ${message}`);
+  }
+
+  getLogs() {
+    return this.logs;
+  }
+  
   constructor() { }
 }

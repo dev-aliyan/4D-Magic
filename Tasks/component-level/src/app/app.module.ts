@@ -3,7 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoggerComponent } from './logger/logger.component';
+import { LoggerComponent } from './components/logger/logger.component';
+import { LogServiceService } from './services/log-service.service';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,7 @@ import { LoggerComponent } from './logger/logger.component';
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [LogServiceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
