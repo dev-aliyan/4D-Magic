@@ -7,6 +7,7 @@ import { Quotes } from '../../Quote';
   templateUrl: './quotes-main.component.html',
   styleUrl: './quotes-main.component.css'
 })
+
 export class QuotesMainComponent implements OnInit {
   quotes : Quotes [] = [];
 
