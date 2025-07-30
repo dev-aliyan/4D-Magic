@@ -1,1 +1,115 @@
-<p>registration-form works!</p>
+<div class="w-3xl rounded-xl bg-neutral-50 drop-shadow-lg p-5">
+    <h2 class="text-2xl font-semibold text-center">Registration Form</h2>
+    <form #registrationForm="ngForm" (ngSubmit)="onSubmit(registrationForm)" class="w-full flex flex-col gap-4 py-10">
+        <div class="flex gap-4">
+            <div class="flex flex-col gap-2 w-full">
+                <input 
+                    type="text" 
+                    name="fullName"
+                    [(ngModel)] = "fullName"
+                    required
+                    #fullNameRef="ngModel"
+                    minlength="3"
+                    placeholder="Full Name" 
+                    [ngClass]="{'border-red-500': fullNameRef.invalid && fullNameRef.touched}"
+                    class="w-full p-2 border border-gray-200 placeholder-gray-400 rounded
+                            focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+                            active:outline-none active:border-blue-600"
+                />
+                <div *ngIf="fullNameRef.invalid && fullNameRef.touched">
+                    <p *ngIf="fullNameRef.errors?.['required']" class="text-red-500 text-xs">Full Name is required.</p>
+                    <p *ngIf="fullNameRef.errors?.['minlength']" class="text-red-500 text-xs">Full Name must be at least 3 characters long.</p>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 w-full">
+                <input 
+                    type="email" 
+                    name="email"
+                    [(ngModel)] = "email"
+                    required
+                    #emailRef="ngModel" 
+                    email
+                    placeholder="Email" 
+                    [ngClass]="{'border-red-500': emailRef.invalid && emailRef.touched}"
+                    class="w-full p-2 border border-gray-200 placeholder-gray-400 rounded
+                            focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+                            active:outline-none active:border-blue-600"
+                />
+                <div *ngIf="emailRef.invalid && emailRef.touched">
+                    <p *ngIf="emailRef.errors?.['required']" class="text-xs text-red-500">Email is Required</p>
+                    <p *ngIf="emailRef.errors?.['email']" class="text-red-500 text-xs">Enter a valid email</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex gap-4">
+            <div class="flex flex-col gap-2 w-full">
+                <input 
+                    type="password" 
+                    name="password"
+                    [(ngModel)] = "password"
+                    placeholder="Password" 
+                    #passwordRef="ngModel"
+                    required
+                    minlength="6"
+                    [ngClass]="{'border-red-500': passwordRef.invalid && passwordRef.touched}"
+                    class="w-full p-2 border border-gray-200 placeholder-gray-400 rounded
+                            focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+                            active:outline-none active:border-blue-600"
+                />
+                <div *ngIf="passwordRef.invalid && passwordRef.touched">
+                    <p *ngIf="passwordRef.errors?.['required']" class="text-red-500 text-xs"> Password is required</p>
+                    <p *ngIf="passwordRef.errors?.['minlength']" class="text-red-500 text-xs">Password must be at least 6 characters long.</p>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 w-full">
+                <input 
+                    type="password" 
+                    name="confirmPassword"
+                    [appMatchPassword]="password"
+                    [(ngModel)] = "confirmPassword"
+                    placeholder="Confirm Password" 
+                    #confirmPasswordRef="ngModel"
+                    required
+                    [ngClass]="{'border-red-500': confirmPasswordRef.invalid && confirmPasswordRef.touched}"
+                    class="w-full p-2 border border-gray-200 placeholder-gray-400 rounded
+                            focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+                            active:outline-none active:border-blue-600"
+                />
+                <div *ngIf="confirmPasswordRef.invalid && confirmPasswordRef.touched">
+                    <p *ngIf="confirmPasswordRef.errors?.['passwordMismatch'] " class="text-red-500 text-xs">Password didn't match</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex gap-4">
+            <div class="flex flex-col gap-2 w-full">
+                <input 
+                    type="number"
+                    name="age"
+                    [(ngModel)] = "age"
+                    [appMinimumAge]="18"
+                    #ageRef="ngModel"
+                    required
+                    placeholder="Age"
+                    [ngClass]="{'border-red-500': ageRef.invalid && ageRef.touched}"
+                    class="flex-1 w-full p-2 border border-gray-200 placeholder-gray-400 rounded
+                            focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200
+                            active:outline-none active:border-blue-600"
+                />
+                <div *ngIf="ageRef.invalid && ageRef.touched">
+                    <p *ngIf="ageRef.errors?.['required']" class="text-red-500 text-xs">Age is required</p>
+                    <p *ngIf="ageRef.errors?.['minAge']" class="text-red-500 text-xs">You must be at least {{ ageRef.errors?.['minAge'].requiredAge }} years old. you entered: {{ ageRef.errors?.['minAge'].actualAge }}</p>
+                </div>
+            </div>
+        </div>
+        <button 
+            type="submit" 
+            [disabled]="registrationForm.invalid || confirmPassword !== password || age! < 18" 
+            class="rounded-xl p-2 text-white cursor-pointer transition-colors duration-200
+                bg-blue-500 hover:bg-blue-600
+                disabled:bg-blue-300 disabled:cursor-not-allowed"
+
+        >
+            Register
+        </button>
+    </form>
+</div>
