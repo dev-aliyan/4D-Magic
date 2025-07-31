@@ -12,22 +12,54 @@
         <option value="clothes">Clothes</option>
       </select>
 
-      <div>
-        <input type="text" name="productName" formControlName="productName" placeholder="Product Name" class="w-full p-2 border border-gray-300 placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <p 
-          *ngIf="
-            productForm.get('productName')?.touched &&
-            productForm.get('productName')?.errors?.['required']
-          "
-          class="text-red-500 text-sm"    
-        >Product name is required.</p>
-        <p 
-          *ngIf="
-            productForm.get('productName')?.touched &&
-            productForm.get('productName')?.errors?.['minlength']
-          "
-          class="text-red-500 text-sm"    
-        >Product name must be more than 3 characters.</p>
+      
+
+      <div class="flex flex-col gap-2" *ngIf="selectedCategory === 'shoes'">
+        <div>
+          <input type="text" name="shoeName" formControlName="shoeName" placeholder="Shoes Name" class="w-full p-2 border border-gray-300 placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <p 
+            *ngIf="productForm.get('shoeName')?.touched && productForm.get('shoeName')?.errors?.['required']" 
+            class="text-red-500 text-sm"
+          >Shoe name is required</p>
+        </div>
+        <div>
+          <input type="number" name="shoeSize" formControlName="shoeSize" placeholder="Shoes Size" class="w-full p-2 border border-gray-300 placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <p 
+            *ngIf="productForm.get('shoeSize')?.touched && productForm.get('shoeSize')?.errors?.['required']" 
+            class="text-red-500 text-sm"
+          >Shoe size is required</p>
+        </div>
+        <div>
+          <input type="text" name="shoeColor" formControlName="shoeColor" placeholder="Shoes Color" class="w-full p-2 border border-gray-300 placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <p 
+            *ngIf="productForm.get('shoeColor')?.touched && productForm.get('shoeColor')?.errors?.['required']" 
+            class="text-red-500 text-sm"
+          >Shoe color is required</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2" *ngIf="selectedCategory === 'clothes'">
+        <div>
+          <input type="text" name="clothesName" formControlName="clothesName" placeholder="Clothes Name" class="w-full p-2 border border-gray-300 placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <p 
+            *ngIf="productForm.get('clothesName')?.touched && productForm.get('clothesName')?.errors?.['required']" 
+            class="text-red-500 text-sm"
+          >Clothes name is required</p>
+        </div>
+        <div>
+          <input type="number" name="clothesSize" formControlName="clothesSize" placeholder="Clothes Size" class="w-full p-2 border border-gray-300 placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <p 
+            *ngIf="productForm.get('clothesSize')?.touched && productForm.get('clothesSize')?.errors?.['required']" 
+            class="text-red-500 text-sm"
+          >Clothes size is required</p>
+        </div>
+        <div>
+          <input type="text" name="clothesColor" formControlName="clothesColor" placeholder="Clothes Color" class="w-full p-2 border border-gray-300 placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <p 
+            *ngIf="productForm.get('clothesColor')?.touched && productForm.get('clothesColor')?.errors?.['required']" 
+            class="text-red-500 text-sm"
+          >Clothes color is required</p>
+        </div>
       </div>
 
       <div>
@@ -48,22 +80,6 @@
         >SKU must be in the format SKU-123</p>
       </div>
 
-      <div *ngIf="selectedCategory === 'shoes'">
-        <input type="number" name="shoeSize" formControlName="shoeSize" placeholder="Shoes Size" class="w-full p-2 border border-gray-300 placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <p 
-          *ngIf="productForm.get('shoeSize')?.touched && productForm.get('shoeSize')?.errors?.['required']" 
-          class="text-red-500 text-sm"
-        >Shoe size is required</p>
-      </div>
-
-      <div *ngIf="selectedCategory === 'clothes'">
-        <input type="number" name="clothesSize" formControlName="clothesSize" placeholder="Clothes Size" class="w-full p-2 border border-gray-300 placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <p 
-          *ngIf="productForm.get('clothesSize')?.touched && productForm.get('clothesSize')?.errors?.['required']" 
-          class="text-red-500 text-sm"
-        >Clothes size is required</p>
-      </div>
-
       <div>
         <input type="number" name="price" formControlName="price" placeholder="Price" class="w-full p-2 border border-gray-300 placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
         <p 
@@ -82,3 +98,4 @@
     </div>
   </form>
 </div>
+

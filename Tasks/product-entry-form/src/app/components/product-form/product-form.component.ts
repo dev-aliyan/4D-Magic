@@ -16,27 +16,24 @@ export class ProductFormComponent implements OnInit {
   ngOnInit(): void {
     this.productForm = this.fb.group({
       category: ['', Validators.required],
-      productName: ['',[Validators.required, Validators.minLength(3)]],
       sku: ['', [Validators.required, Validators.minLength(3)]],
       price: ['', [Validators.required, Validators.min(1)]],
-    })
+
+      shoeName: ['', Validators.required],
+      shoeSize: ['', Validators.required],
+      shoeColor: ['', Validators.required],
+
+      clothesName: ['', Validators.required],
+      clothesSize: ['', Validators.required],
+      clothesColor: ['', Validators.required]
+    });
 
     this.productForm.get('category')?.valueChanges.subscribe(category => {
       this.selectedCategory = category;
       console.log('Selected Category:', this.selectedCategory);
-      this.updateCategoryFields(category);
     });
   }
 
-  updateCategoryFields(category: string) {
-    
-
-    if (category === 'shoes') {
-      this.productForm.addControl('shoeSize', this.fb.control('', Validators.required));
-    } else if (category === 'clothes') {
-      this.productForm.addControl('clothesSize', this.fb.control('', Validators.required));
-    }
-  }
 
   onSubmit() {
     if (this.productForm.valid) {
