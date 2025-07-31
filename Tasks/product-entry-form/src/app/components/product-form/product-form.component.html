@@ -57,7 +57,7 @@
       </div>
 
       <div *ngIf="selectedCategory === 'clothes'">
-        <input type="number" name="clothsSize" formControlName="clothsSize" placeholder="Clothes Size" class="w-full p-2 border border-gray-300 placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <input type="number" name="clothesSize" formControlName="clothesSize" placeholder="Clothes Size" class="w-full p-2 border border-gray-300 placeholder-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
         <p 
           *ngIf="productForm.get('clothesSize')?.touched && productForm.get('clothesSize')?.errors?.['required']" 
           class="text-red-500 text-sm"

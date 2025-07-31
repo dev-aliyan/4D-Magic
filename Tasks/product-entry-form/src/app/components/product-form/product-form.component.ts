@@ -29,11 +29,7 @@ export class ProductFormComponent implements OnInit {
   }
 
   updateCategoryFields(category: string) {
-    ['shoeSize', 'clothesSize'].forEach(field => {
-      if (this.productForm.contains(field)) {
-        this.productForm.removeControl(field);
-      }
-    });
+    
 
     if (category === 'shoes') {
       this.productForm.addControl('shoeSize', this.fb.control('', Validators.required));
