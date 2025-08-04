@@ -11,6 +11,7 @@ export class TasksComponent implements OnInit {
 
   taskTitle: string = '';
   description: string = '';
+  completed: boolean = false;
 
   ngOnInit() {
     this.tasks = [

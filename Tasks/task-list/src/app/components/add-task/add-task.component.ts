@@ -9,6 +9,7 @@ import { Task } from '../../Task';
 export class AddTaskComponent {
   @Input() taskTitle: string = '';
   @Input() description: string = '';
+  @Input() completed: boolean = false;
 
   @Output() taskAdd: EventEmitter<Task> = new EventEmitter();
 
@@ -16,7 +17,7 @@ export class AddTaskComponent {
     const newTask: Task = {
       title: this.taskTitle,
       description: this.description,
-      completed: false
+      completed: this.completed
     };
 
     this.taskAdd.emit(newTask);

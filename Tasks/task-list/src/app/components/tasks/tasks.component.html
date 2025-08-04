@@ -10,10 +10,13 @@
     <div class="flex flex-col gap-2 mt-4">
       <input type="text" [(ngModel)]="taskTitle" placeholder="Task Title" class="w-full rounded-xl border border-gray-300 placeholder-gray-600 p-2 outline-blue-500 focus:border-blue-500" />
       <input type="text" [(ngModel)]="description" placeholder="Description" class="w-full rounded-xl border border-gray-300 placeholder-gray-600 p-2  outline-blue-500 focus:border-blue-500" />
+      <input type="text" [(ngModel)]="completed" placeholder="Completed" class="w-full rounded-xl border border-gray-300 placeholder-gray-600 p-2  outline-blue-500 focus:border-blue-500" />
       
+
       <app-add-task 
         [taskTitle]="taskTitle" 
         [description]="description" 
+        [completed]="completed"
         (taskAdd)="addTask($event)">
       </app-add-task>
     </div>
