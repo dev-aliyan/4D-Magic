@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule, FormArray } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService, UserProfile } from '../../services/user.service';
 
@@ -27,6 +27,8 @@ export class ProfileComponent implements OnInit {
 
     this.userForm.valueChanges.subscribe(value => this.preview = value);
     this.preview = user;
+
+    
   }
 
   onImageChange(newImage: string) {

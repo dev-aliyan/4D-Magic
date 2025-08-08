@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "template-driven-forms": {
+    "forms-array": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -23,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/template-driven-forms",
+            "outputPath": "dist/forms-array",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -67,10 +67,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "template-driven-forms:build:production"
+              "buildTarget": "forms-array:build:production"
             },
             "development": {
-              "buildTarget": "template-driven-forms:build:development"
+              "buildTarget": "forms-array:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -78,7 +78,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "template-driven-forms:build"
+            "buildTarget": "forms-array:build"
           }
         },
         "test": {
@@ -101,8 +101,5 @@
         }
       }
     }
-  },
-  "cli": {
-    "analytics": false
   }
 }
