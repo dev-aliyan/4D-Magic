@@ -1,0 +1,12 @@
+<div class="bg-neutral-50 shadow-xs rounded-xl p-4">
+    <h2 class="text-4xl">Your Event</h2>
+    <h2 class="text-3xl">Title: {{event.title}}</h2>
+    <p>Date : {{event.date}}</p>
+    <p>Location : {{event.location}}</p>
+    <p>Capacity : {{event.capacity}}</p>
+    <p>Price : {{event.price}}</p>
+    <div class="flex gap-2">
+        <button class="bg-red-500 rounded-xl p-2 text-white cursor-pointer" (click)="editEvent()">Edit</button>
+        <button class="bg-blue-500 rounded-xl p-2 text-white cursor-pointer" (click)="deleteEvent()">Delete</button>
+    </div>
+</div>
