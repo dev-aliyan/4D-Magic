@@ -40,7 +40,9 @@ export class EventFormComponent implements OnInit {
   }
 
   saveEvent() {
-    if (this.eventForm.invalid) return;
+    if (this.eventForm.invalid) {
+      console.log(this.eventForm.value, 'Event FormValues')
+    };
 
     const event: Event = { id: this.eventId, ...this.eventForm.value };
 
