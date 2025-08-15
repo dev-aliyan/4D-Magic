@@ -3,7 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MainComponent } from './components/main/main.component';
+import { MainComponent } from "./components/main/main.component";
+import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -12,8 +14,11 @@ import { MainComponent } from './components/main/main.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
-  ],
+    AppRoutingModule,
+    ReactiveFormsModule,
+    CommonModule,
+    
+],
   providers: [],
   bootstrap: [AppComponent]
 })

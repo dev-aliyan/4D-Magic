@@ -1,0 +1,183 @@
+<form [formGroup]="orgForm" (ngSubmit)="onSubmit()" class="space-y-6">
+  <!-- Departments -->
+  <div formArrayName="departments" class="space-y-6">
+    <div
+      *ngFor="let deptCtrl of departments.controls; let di = index"
+      [formGroupName]="di"
+      class="bg-white p-6 rounded-xl shadow border border-gray-200 space-y-4"
+    >
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg font-semibold">Department {{ di + 1 }}</h3>
+        <button
+          type="button"
+          (click)="removeDepartment(di)"
+          class="text-red-500 hover:underline"
+        >
+          Remove
+        </button>
+      </div>
+
+      <input
+        formControlName="name"
+        placeholder="Department Name"
+        class="w-full p-2 border border-gray-300 rounded-lg"
+      />
+
+      <input
+        formControlName="deptCode"
+        placeholder="Dept Code (A-Z)"
+        class="w-full p-2 border border-gray-300 rounded-lg"
+      />
+
+      <label class="flex items-center gap-2">
+        <input
+          type="checkbox"
+          formControlName="hasTeams"
+          (change)="!deptCtrl.value.hasTeams ? getTeams(di).clear() : null"
+        />
+        Has Teams
+      </label>
+
+      <!-- Teams -->
+      <div *ngIf="deptCtrl.value.hasTeams" class="space-y-4">
+        <button
+          type="button"
+          (click)="addTeam(di)"
+          class="px-4 py-2 bg-blue-500 text-white rounded-lg"
+        >
+          + Add Team
+        </button>
+
+        <div formArrayName="teams" class="space-y-4">
+          <div
+            *ngFor="let teamCtrl of getTeams(di).controls; let ti = index"
+            [formGroupName]="ti"
+            class="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-3"
+          >
+            <div class="flex justify-between items-center">
+              <h4 class="font-medium">Team {{ ti + 1 }}</h4>
+              <button
+                type="button"
+                (click)="removeTeam(di, ti)"
+                class="text-red-500 hover:underline"
+              >
+                Remove
+              </button>
+            </div>
+
+            <input
+              formControlName="teamName"
+              placeholder="Team Name"
+              class="w-full p-2 border border-gray-300 rounded-lg"
+            />
+
+            <select
+              formControlName="teamLead"
+              class="w-full p-2 border border-gray-300 rounded-lg"
+            >
+              <option value="">Select Lead</option>
+              <option
+                *ngFor="let memberCtrl of getMembers(di, ti).controls"
+                [value]="memberCtrl.value.fullName"
+              >
+                {{ memberCtrl.value.fullName }}
+              </option>
+            </select>
+
+            <label class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                formControlName="addMembers"
+                (change)="
+                  !teamCtrl.value.addMembers ? getMembers(di, ti).clear() : null
+                "
+              />
+              Add Members
+            </label>
+
+            <!-- Members -->
+            <div *ngIf="teamCtrl.value.addMembers" class="space-y-3">
+              <button
+                type="button"
+                (click)="addMember(di, ti)"
+                class="px-4 py-2 bg-green-500 text-white rounded-lg"
+              >
+                + Add Member
+              </button>
+
+              <div formArrayName="members" class="space-y-3">
+                <div
+                  *ngFor="
+                    let memCtrl of getMembers(di, ti).controls;
+                    let mi = index
+                  "
+                  [formGroupName]="mi"
+                  class="bg-white p-3 rounded-lg border border-gray-200 space-y-2"
+                >
+                  <input
+                    formControlName="fullName"
+                    placeholder="Full Name"
+                    class="w-full p-2 border border-gray-300 rounded-lg"
+                  />
+
+                  <select
+                    formControlName="role"
+                    class="w-full p-2 border border-gray-300 rounded-lg"
+                  >
+                    <option value="">Select Role</option>
+                    <option>Developer</option>
+                    <option>QA</option>
+                    <option>PM</option>
+                    <option>Designer</option>
+                  </select>
+
+                  <input
+                    formControlName="email"
+                    placeholder="Email"
+                    class="w-full p-2 border border-gray-300 rounded-lg"
+                  />
+
+                  <button
+                    type="button"
+                    (click)="removeMember(di, ti, mi)"
+                    class="text-red-500 hover:underline"
+                  >
+                    Remove Member
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-sm text-gray-500">
+        Teams: {{ getDepartmentTeamsCount(di) }} | Members:
+        {{ getDepartmentMembersCount(di) }}
+      </p>
+    </div>
+  </div>
+
+  <button
+    type="button"
+    (click)="addDepartment()"
+    class="px-4 py-2 bg-purple-500 text-white rounded-lg"
+  >
+    + Add Department
+  </button>
+
+  <div class="border-t pt-4 mt-6">
+    <p>
+      Total Departments: {{ getTotalDepartments() }} | Total Teams:
+      {{ getTotalTeams() }} | Total Members: {{ getTotalMembers() }}
+    </p>
+  </div>
+
+  <button
+    type="submit"
+    [disabled]="!orgForm.valid || !orgForm.dirty"
+    class="mt-4 px-6 py-3 bg-indigo-600 text-white rounded-lg disabled:opacity-50"
+  >
+    Submit
+  </button>
+</form>
