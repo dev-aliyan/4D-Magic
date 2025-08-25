@@ -1,0 +1,16 @@
+
+
+<div *ngIf="jsonData" class="mt-4">
+  <h2>Weather for {{ jsonData.location.name }}</h2>
+
+  <h3>Location Info</h3>
+  <div *ngFor="let item of jsonData.location | keyvalue">
+    <strong>{{ item.key }}:</strong> {{ item.value }}
+  </div>
+
+  <h3>Current Weather</h3>
+  <div *ngFor="let item of jsonData.current | keyvalue">
+    <strong>{{ item.key }}:</strong>
+    <span *ngIf="item.key !== 'condition'">{{ item.value }}</span>
+  </div>
+</div>
