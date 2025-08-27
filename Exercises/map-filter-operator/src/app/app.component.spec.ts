@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'state-management'`, () => {
+  it(`should have as title 'map-filter-operator'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('state-management');
+    expect(app.title).toEqual('map-filter-operator');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, state-management');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, map-filter-operator');
   });
 });

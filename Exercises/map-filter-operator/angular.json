@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "state-management": {
+    "map-filter-operator": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -23,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/state-management",
+            "outputPath": "dist/map-filter-operator",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -67,10 +67,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "state-management:build:production"
+              "buildTarget": "map-filter-operator:build:production"
             },
             "development": {
-              "buildTarget": "state-management:build:development"
+              "buildTarget": "map-filter-operator:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -78,7 +78,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "state-management:build"
+            "buildTarget": "map-filter-operator:build"
           }
         },
         "test": {
