@@ -1,0 +1,139 @@
+// #region helper functions
+
+  prepareImageUrls(article: Article): Article  {
+    article.articleImages.forEach(image => {
+      if (Array.isArray(image.imagesUrl)) {
+        image.imagesUrl = image.imagesUrl
+          .filter((url: string | Files) => (url as Files).file === null)
+          .map((url: string | Files) => (url as Files).blobLink) as string[];
+      }
+    });
+    return article;
+  }
+
+  containsImageFile(article: Article): boolean {
+    return !!article.articleImages?.some(image =>
+      image.imagesUrl.some((img: any) => 'file' in img && img.file !== null)
+    );
+  }
+
+  handleSuccessResponse (result : any, article: Article) {
+    if (result.statusCode === "200") {
+      this.upsertArticle(article, result.responseData);
+    } else {
+      this.handleUploadError(result.message);
+      return;
+    }
+  }
+
+  handleResponse(result: any) {
+    this.loading = false;
+    if (result.statusCode == "200") {
+      this.toastr.success(result.message, 'Success', { timeOut: 10000 });
+      this.isSubmitted = false;
+      this.articleSubmitted();
+    } else if (result.statusCode == "400") {
+      this.toastr.error(result.message, "Failed", { timeOut: 10000 });
+    } else {
+      this.toastr.error(result.message, 'Error', { timeOut: 10000 });
+    }
+  }
+
+  extractFileName(url: string): string {
+    const match = url.match(/\/([^\/]+)_\d{14}(\.\w+)$/);
+    return match ? `${match[1]}${match[2]}` : '';
+  }
+
+  handleUploadError(message: string) {
+    this.toastr.error(message, "Upload Failed!", { timeOut: 10000 });
+    this.loading = false;
+  }
+
+  handleError(error: any) {
+    this.articleBasicFormData.articleImages = this.imagesUrls;
+    this.loading = false;
+    this.toastr.error(error, 'Error', { timeOut: 10000 });
+  }
+  //#endregion
+
+uploadData(article: Article) {
+    const hasImageFile = this.containsImageFile(article);
+    this.loading = true;
+
+    if (article.id !== "" && !hasImageFile) {
+      this.prepareImageUrls(article);
+      this.articleService.updateArticle(article)
+        .pipe(first())
+        .subscribe({
+          next: this.handleResponse.bind(this),
+          error: this.handleError.bind(this)
+        });
+    } else {
+      if (hasImageFile) {
+        this.articleService.uploadImages(article.articleImages)
+          .pipe(first())
+          .subscribe({
+            next: this.handleSuccessResponse.bind(this, article),
+            error: this.handleError.bind(this)
+          });
+      } else {
+        this.upsertArticle(article, []);
+      }
+    }
+  }
+
+
+upsertArticle(article: Article, resultImages: ArticleImages[]) {
+    // replacing uploaded image urls into article's image file object and updating the bloblink from file to imagebloblink by extracting the name and extension from the file name
+    if (resultImages.length > 0) {
+      const images: ArticleImages[] = resultImages
+      images.forEach(element => {
+        const index = article.articleImages.findIndex(x => x.layoutName == element.layoutName)
+        if (index > -1) {
+          element.imagesUrl.forEach((imagesUrl: any) => {
+            const imageName = this.extractFileName(imagesUrl);
+
+            const fileIndex = article.articleImages[index].imagesUrl.findIndex((url: string | { file: { name: string } }) => {
+              if (typeof url !== 'string' && url.file && url.file.name) {
+                return url.file.name === imageName;
+              }
+              return false;
+            });
+
+            if (fileIndex !== -1) {
+              article.articleImages[index].imagesUrl[fileIndex] = imagesUrl; //Updating imagesUrl at index
+            } else {
+              console.warn("No matching file found for:", imageName);
+            }
+          })
+        }
+      });
+    }
+
+    //  restructuring data - changing the object {file,bloblink} into just string[] 
+    this.prepareImageUrls(article);
+
+    //updating article via service call
+    this.articleService.upsertArticle(article).pipe(first()).subscribe({
+      next: this.handleResponse.bind(this),
+      error: this.handleError.bind(this)
+    });
+  }
+
+prepareImageUrls(article: Article): Article  {
+    article.articleImages.forEach(image => {
+      if (Array.isArray(image.imagesUrl)) {
+        image.imagesUrl = image.imagesUrl
+          .filter((url: string | Files) => (url as Files).file === null)
+          .map((url: string | Files) => (url as Files).blobLink) as string[];
+      }
+    });
+    return article;
+  }
+
+  containsImageFile(article: Article): boolean {
+    return !!article.articleImages?.some(image =>
+      image.imagesUrl.some((img: any) => 'file' in img && img.file !== null)
+    );
+  }
+
