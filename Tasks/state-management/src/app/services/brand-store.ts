@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { Brand, Item } from '../models/brand';
 
 @Injectable({ providedIn: 'root' })
@@ -36,23 +36,31 @@ export class BrandStoreService {
     ],
   };
 
-  // State subjects
+  // --- State ---
   private selectedBrandId$ = new BehaviorSubject<string>('A');
 
   private cartSubject = new BehaviorSubject<Item[]>([]);
   private waitingSubject = new BehaviorSubject<Item[]>([]);
   private ordersSubject = new BehaviorSubject<Item[]>([]);
 
-  // Exposed Observables
+  // --- Exposed observables ---
   itemsForSelectedBrand$ = this.selectedBrandId$.pipe(
     map(id => this.itemsByBrand[id] ?? [])
   );
 
-  cart$ = this.cartSubject.asObservable();
-  waiting$ = this.waitingSubject.asObservable();
-  orders$ = this.ordersSubject.asObservable();
+  cart$ = combineLatest([this.cartSubject, this.selectedBrandId$]).pipe(
+    map(([cart, brandId]) => cart.filter(i => i.brandId === brandId))
+  );
 
-  // State change methods
+  waiting$ = combineLatest([this.waitingSubject, this.selectedBrandId$]).pipe(
+    map(([waiting, brandId]) => waiting.filter(i => i.brandId === brandId))
+  );
+
+  orders$ = combineLatest([this.ordersSubject, this.selectedBrandId$]).pipe(
+    map(([orders, brandId]) => orders.filter(i => i.brandId === brandId))
+  );
+
+  // --- State change methods ---
   selectBrand(id: string) {
     this.selectedBrandId$.next(id);
   }
