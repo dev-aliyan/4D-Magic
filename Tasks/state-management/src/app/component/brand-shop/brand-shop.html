@@ -1,93 +1,31 @@
-<div class="page">
-  <h2>Brand Shop (RxJS)</h2>
 
+<div class="container flex flex-col gap-10 mx-auto p-6 space-y-8">
   
+  <app-brand-selector
+    [brands]="store.brands"
+    [selectedId]="(store.selectedBrandId | async) || ''"
+    (brandChange)="store.selectBrand($event)">
+  </app-brand-selector>
 
 
-  <!-- Brand Selector -->
-  <div class="row">
-    <label for="brandSelect">Brand:</label>
-    <select id="brandSelect" [formControl]="brandControl">
-      <option *ngFor="let b of brands" [value]="b.id">{{ b.name }}</option>
-    </select>
-  </div>
+  <app-item-lis
+    [items]="(store.itemsForSelectedBrand$ | async) || []"
+    (addToCart)="store.addToCart($event)">
+  </app-item-lis>
 
-  <!-- Items for selected brand -->
-  <section class="panel">
-    <h3>Items</h3>
-    <div *ngIf="items$ | async as items">
-        <div *ngIf="items.length; else noItems">
-            <div class="list">
-            <div class="card" *ngFor="let it of items">
-                <div>
-                  <div class="title">{{ it.name }}</div>
-                  <div class="sub">#{{ it.id }} — ${{ it.price }}</div>
-                </div>
-                <button class="bg-blue-500 p-2 text-sm text-white rounded-xl" (click)="addToCart(it)">Add to Cart</button>
-            </div>
-            </div>
-        </div>
-        <ng-template #noItems>
-            <div class="muted">No items.</div>
-        </ng-template>
-    </div>
-  </section>
 
-  <!-- Cart -->
-  <section class="panel">
-    <h3>Cart</h3>
-    <ng-container *ngIf="cart$ | async as cart">
-      <div class="list" *ngIf="cart.length; else emptyCart">
-        <div class="card" *ngFor="let it of cart">
-          <div>
-            <div class="title">{{ it.name }}</div>
-            <div class="sub">#{{ it.id }} — ${{ it.price }}</div>
-          </div>
-          <div class="actions">
-            <button (click)="requestBooking(it)">Request Booking</button>
-            <button (click)="addToWaiting(it)">Add to Waiting List</button>
-          </div>
-        </div>
-      </div>
-      <ng-template #emptyCart>
-        <div class="muted">No items in cart.</div>
-      </ng-template>
-    </ng-container>
-  </section>
+  <app-cart
+    [cart]="(store.cart$ | async) || []"
+    (requestBooking)="store.moveCartItemToOrders($event)"
+    (addToWaiting)="store.moveCartItemToWaiting($event)">
+  </app-cart>
 
-  <!-- Waiting List -->
-  <section class="panel">
-    <h3>Waiting List</h3>
-    <ng-container *ngIf="waiting$ | async as waiting">
-      <div class="list" *ngIf="waiting.length; else emptyWaiting">
-        <div class="card" *ngFor="let it of waiting">
-          <div>
-            <div class="title">{{ it.name }}</div>
-            <div class="sub">#{{ it.id }} — ${{ it.price }}</div>
-          </div>
-          <button (click)="moveWaitingToCart(it)">Move to Cart (Temporary)</button>
-        </div>
-      </div>
-      <ng-template #emptyWaiting>
-        <div class="muted">No items in waiting list.</div>
-      </ng-template>
-    </ng-container>
-  </section>
 
-  <!-- Orders -->
-  <section class="panel">
-    <h3>Orders</h3>
-    <ng-container *ngIf="orders$ | async as orders">
-      <div class="list" *ngIf="orders.length; else emptyOrders">
-        <div class="card" *ngFor="let it of orders">
-          <div class="title">{{ it.name }}</div>
-          <div class="sub">#{{ it.id }} — ${{ it.price }}</div>
-        </div>
-      </div>
-      <ng-template #emptyOrders>
-        <div class="muted">No orders yet.</div>
-      </ng-template>
-    </ng-container>
+  <app-waiting-list
+    [waiting]="(store.waiting$ | async) || []"
+    (moveToCart)="store.moveWaitingItemToCart($event)">
+  </app-waiting-list>
 
-  </section>
+   <app-orders [orders]="(store.orders$ | async) || []"></app-orders>
 </div>
+
