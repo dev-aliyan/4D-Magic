@@ -6,11 +6,13 @@ import { App } from './app';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BrandShopComponent } from './component/brand-shop/brand-shop';
+import { BrandSelector } from './component/brand-selector/brand-selector';
 
 @NgModule({
   declarations: [
     App,
     BrandShopComponent,
+    BrandSelector,
   ],
   imports: [
     BrowserModule,
