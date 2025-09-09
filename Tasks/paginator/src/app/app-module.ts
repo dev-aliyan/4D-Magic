@@ -1,13 +1,11 @@
 import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { DataView } from 'primeng/dataview';
+import { PaginatorModule } from 'primeng/paginator';
 import { ButtonModule } from 'primeng/button';
-import { Tag } from 'primeng/tag';
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { CommonModule } from '@angular/common';
 import { Main } from './component/main/main';
-import { Paginator } from 'primeng/paginator';
 import { CardModule } from 'primeng/card';
 
 @NgModule({
@@ -18,12 +16,10 @@ import { CardModule } from 'primeng/card';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    DataView,
     ButtonModule,
-    Tag,
     CommonModule,
-    Paginator,
-    CardModule
+    CardModule,
+    PaginatorModule,
 ],
   providers: [
     provideBrowserGlobalErrorListeners()
