@@ -1,4 +1,6 @@
+<div class="flex flex-column justify-content-between">
 
+    
 <div class="grid gap-5 p-6">
   <div 
     *ngFor="let product of pagedProducts()" 
@@ -23,4 +25,7 @@
         [totalRecords]="products().length"
         [rowsPerPageOptions]="[5, 10, 20]"
     ></p-paginator>
+</div>
+
+
 </div>
