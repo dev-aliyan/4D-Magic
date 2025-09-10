@@ -11,11 +11,17 @@ import { WaitingListComponent } from './component/waiting-list/waiting-list.comp
 import { NavbarComponent } from './component/navbar/navbar.component';
 
 const routes: Routes = [
-  { path: '', component: BrandShopComponent }, 
-  { path: 'item-list', component: ItemListComponent },
-  { path: 'cart', component: CartComponent },
-  { path: 'orders', component: OrderComponent },
-  { path: 'waiting-list', component: WaitingListComponent }
+  { 
+    path: '', 
+    component: BrandShopComponent,
+    children: [
+      { path: '', redirectTo: 'item-list', pathMatch: 'full' },
+      { path: 'item-list', component: ItemListComponent },
+      { path: 'cart', component: CartComponent },
+      { path: 'orders', component: OrderComponent },
+      { path: 'waiting-list', component: WaitingListComponent }
+    ]
+  }
 ];
 
 @NgModule({
@@ -30,7 +36,7 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)   // ✅ Correct way to register child routes
+    RouterModule.forChild(routes)
   ]
 })
 export class ShopModule {}

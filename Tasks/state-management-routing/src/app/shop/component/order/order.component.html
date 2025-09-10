@@ -1,8 +1,8 @@
 <div>
   <h2 class="text-xl font-bold mb-3">Orders</h2>
-  <div *ngIf="orders.length === 0" class="text-gray-500">No orders placed</div>
+  <div *ngIf="(store.orders$ | async)?.length === 0" class="text-gray-500">No orders placed</div>
   <ul>
-    <li *ngFor="let item of orders" class="p-2 border-b">
+    <li *ngFor="let item of store.orders$ | async" class="p-2 border-b">
       {{ item.name }} - {{ item.price | currency }}
     </li>
   </ul>

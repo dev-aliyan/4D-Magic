@@ -1,10 +1,10 @@
 <div>
   <h2 class="text-xl font-bold mb-3">Waiting</h2>
-  <div *ngIf="waiting.length === 0" class="text-gray-500">No items waiting</div>
-  <div *ngFor="let item of waiting" class="flex justify-between items-center p-2 border-b">
+  <div *ngIf="(store.waiting$ | async)?.length === 0" class="text-gray-500">No items waiting</div>
+  <div *ngFor="let item of store.waiting$ | async" class="flex justify-between items-center p-2 border-b">
     <span>{{ item.name }}</span>
     <button
-      (click)="moveToCart.emit(item)"
+      (click)="store.moveWaitingItemToCart(item)"
       class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
     >
       Move to Cart

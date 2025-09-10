@@ -87,17 +87,14 @@ export class BrandStoreService {
   //local storage key for cart persistence
   private readonly storageKey = 'brandState_v1';
 
-
   // ----- reactive state pointers -----
   // currently selected brand id (BehaviorSubject so new subscribers get current value)
   private selectedBrandId$ = new BehaviorSubject<string>(this.brands[0]?.id ?? 'A');
 
   // internal per-brand state object (cart/waiting/orders) persisted to localStorage
-
   private stateByBrand: Record<string, { cart: Item[]; waiting : Item[]; orders: Item[] }> = {};
 
   // subjects that represent the current brand's view lists (these are pushed when selection or mutation happens)
-
   private cartSubject = new BehaviorSubject<Item[]>([]);
   private waitingSubject = new BehaviorSubject<Item[]>([]);
   private ordersSubject = new BehaviorSubject<Item[]>([]);
@@ -105,7 +102,6 @@ export class BrandStoreService {
   // ----- public observables (templates/components subscribe to these) -----
   // expose selectedBrand as observable (read-only to outside)
   selectedBrandId = this.selectedBrandId$.asObservable();
-
 
   // --- Exposed observables ---
   itemsForSelectedBrand$ = combineLatest([
@@ -131,15 +127,24 @@ export class BrandStoreService {
   orders$ = this.ordersSubject.asObservable();
 
   constructor() {
-    // initialize stateByBrand either from localStorage or with empty lists per brand
+    // ✅ Restore from localStorage correctly - FIXED
     const storedState = localStorage.getItem(this.storageKey);
-    this.stateByBrand = storedState ? JSON.parse(storedState) : {};
+    
+    if (storedState) {
+      const parsedState = JSON.parse(storedState);
+      this.stateByBrand = parsedState.stateByBrand || {};
+    } else {
+      this.stateByBrand = {};
+    }
+
+    // Ensure every brand has state initialized
     this.brands.forEach(brand => {
       if (!this.stateByBrand[brand.id]) {
         this.stateByBrand[brand.id] = { cart: [], waiting: [], orders: [] };
       }
     });
 
+    // ✅ Immediately load data for the default brand (persisted or first brand)
     const initialBrandId = this.selectedBrandId$.value;
     this.loadBrandStateIntoSubjects(initialBrandId);
   }

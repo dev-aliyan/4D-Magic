@@ -1,15 +1,15 @@
 <div class="w-full">
+  <h2 class="text-xl font-bold mb-4">Available Items</h2>
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-    <div *ngFor="let item of items" class="p-4 border rounded-lg shadow hover:shadow-lg transition">
+    <div *ngFor="let item of store.itemsForSelectedBrand$ | async" class="p-4 border rounded-lg shadow hover:shadow-lg transition">
       <h3 class="text-lg font-semibold">{{ item.name }}</h3>
       <p class="text-gray-600">Price: {{ item.price | currency }}</p>
       <button
-        (click)="addToCart.emit(item)"
+        (click)="store.addToCart(item)"
         class="mt-2 px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700"
       >
         Add to Cart
       </button>
     </div>
   </div>
-
 </div>

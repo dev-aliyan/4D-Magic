@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { Item } from '../../../models/brand';
+import { Component } from '@angular/core';
+import { BrandStoreService } from '../../../services/brand-store.service';
 
 @Component({
   selector: 'app-order',
@@ -7,5 +7,5 @@ import { Item } from '../../../models/brand';
   styleUrl: './order.component.css'
 })
 export class OrderComponent {
-  @Input() orders: Item[] = [];
+  constructor(public store: BrandStoreService) {}
 }

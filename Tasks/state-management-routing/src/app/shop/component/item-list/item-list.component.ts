@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Item } from '../../../models/brand';
+import { Component } from '@angular/core';
+import { BrandStoreService } from '../../../services/brand-store.service';
 
 @Component({
   selector: 'app-item-list',
@@ -7,6 +7,5 @@ import { Item } from '../../../models/brand';
   styleUrl: './item-list.component.css'
 })
 export class ItemListComponent {
-  @Input() items: Item [] = [];
-  @Output() addToCart = new EventEmitter<Item>();
+  constructor(public store: BrandStoreService) {}
 }

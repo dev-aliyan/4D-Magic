@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Item } from '../../../models/brand';
+import { Component } from '@angular/core';
+import { BrandStoreService } from '../../../services/brand-store.service';
 
 @Component({
   selector: 'app-waiting-list',
@@ -7,6 +7,5 @@ import { Item } from '../../../models/brand';
   styleUrl: './waiting-list.component.css'
 })
 export class WaitingListComponent {
-  @Input() waiting: Item[] = [];
-  @Output() moveToCart = new EventEmitter<Item>();
+  constructor(public store: BrandStoreService) {}
 }
