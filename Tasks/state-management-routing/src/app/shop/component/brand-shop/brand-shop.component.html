@@ -1,0 +1,33 @@
+<div class="flex flex-col gap-10">
+    <app-navbar></app-navbar>
+
+  
+  <app-brand-selector
+    [brands]="store.brands"
+    [selectedId]="(store.selectedBrandId | async) || ''"
+    (brandChange)="store.selectBrand($event)">
+  </app-brand-selector>
+
+
+  <app-item-list
+    [items]="(store.itemsForSelectedBrand$ | async) || []"
+    (addToCart)="store.addToCart($event)">
+  </app-item-list>
+
+  <app-cart
+    [cart]="(store.cart$ | async) || []"
+    (requestBooking)="store.moveCartItemToOrders($event)"
+    (addToWaiting)="store.moveCartItemToWaiting($event)">
+  </app-cart>
+
+
+  <app-waiting-list
+    [waiting]="(store.waiting$ | async) || []"
+    (moveToCart)="store.moveWaitingItemToCart($event)">
+  </app-waiting-list>
+
+   <app-order [orders]="(store.orders$ | async) || []"></app-order>
+
+
+
+</div>
