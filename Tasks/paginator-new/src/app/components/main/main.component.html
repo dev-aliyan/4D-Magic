@@ -1,0 +1,31 @@
+<div class="flex flex-column justify-content-between">
+
+    
+<div class="grid gap-5 p-6">
+  <div 
+    *ngFor="let product of pagedProducts()" 
+    class="col-12 sm:col-6 md:col-4 lg:col-3 xl:col-2"
+  >
+    <p-card header="Card">
+      <h3 class="text-lg font-semibold">{{ product.name }}</h3>
+      <p class="text-gray-600">Price: {{ product.price | currency }}</p>
+      <p>Status: {{ product.inventoryStatus }}</p>
+    </p-card>
+  </div>
+</div>
+
+
+
+    
+<div class="flex justify-content-center">
+    <p-paginator
+        (onPageChange)="onPageChange($event)"
+        [first]="first"
+        [rows]="rows"
+        [totalRecords]="products().length"
+        [rowsPerPageOptions]="[5, 10, 20]"
+    ></p-paginator>
+</div>
+
+
+</div>
