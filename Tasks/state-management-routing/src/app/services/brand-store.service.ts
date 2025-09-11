@@ -127,7 +127,6 @@ export class BrandStoreService {
   orders$ = this.ordersSubject.asObservable();
 
   constructor() {
-    // ✅ Restore from localStorage correctly - FIXED
     const storedState = localStorage.getItem(this.storageKey);
     
     if (storedState) {
