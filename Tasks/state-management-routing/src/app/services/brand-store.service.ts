@@ -165,7 +165,6 @@ export class BrandStoreService {
     this.ordersSubject.next([...state.orders]);
   }
 
-  // ---------- public API methods ----------
   // --- State change methods ---
   selectBrand(id: string) {
     if(!this.itemsByBrand[id]) {
