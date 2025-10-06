@@ -132,6 +132,7 @@ export class BrandStoreService {
     if (storedState) {
       const parsedState = JSON.parse(storedState);
       this.stateByBrand = parsedState.stateByBrand || {};
+      console.log(this.stateByBrand, 'Brand State')
     } else {
       this.stateByBrand = {};
     }
@@ -140,6 +141,7 @@ export class BrandStoreService {
     this.brands.forEach(brand => {
       if (!this.stateByBrand[brand.id]) {
         this.stateByBrand[brand.id] = { cart: [], waiting: [], orders: [] };
+        console.log(this.stateByBrand[brand.id])
       }
     });
 
@@ -152,6 +154,7 @@ export class BrandStoreService {
   private persistState(): void {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify({ stateByBrand: this.stateByBrand }));
+      console.log(this.storageKey, JSON.stringify({ stateByBrand: this.stateByBrand }),'Storage Key')
     } catch (error) {
       // ignore storage errors silently (or log)
       console.error('Error persisting state to localStorage:', error);
@@ -163,6 +166,7 @@ export class BrandStoreService {
     this.cartSubject.next([...state.cart]);
     this.waitingSubject.next([...state.waiting]);
     this.ordersSubject.next([...state.orders]);
+    console.log(state, 'State')
   }
 
   // --- State change methods ---

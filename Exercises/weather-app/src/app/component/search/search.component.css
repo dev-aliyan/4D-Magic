@@ -1,0 +1,6 @@
+.search {
+  display: flex;
+  gap: 8px;
+}
+input { padding: 8px; width: 240px; }
+button { padding: 8px 12px; }

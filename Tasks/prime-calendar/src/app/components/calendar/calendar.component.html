@@ -1,0 +1,15 @@
+<p-calendar
+  [(ngModel)]="selectedDate"
+  (onSelect)="onSelectDate($event)"
+  [inline]="true"
+  dateFormat="dd/mm/yy"
+  selectionMode="range"
+  [disabledDates]="bookedDates"
+  [readonlyInput]="true" [showWeek]="true"
+>
+  <ng-template pTemplate="date" let-data>
+    <div *ngIf="data?.date" [ngClass]="getDayClass(data.date)">
+      {{ data.date.getDate() }}
+    </div>
+  </ng-template>
+</p-calendar>

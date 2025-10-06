@@ -1,0 +1,7 @@
+<div class="search" [formGroup]="form">
+  <input 
+    #input 
+    formControlName="query" 
+    placeholder="Search city e.g. Karachi" />
+  <button (click)="onSearchClick()">Search</button>
+</div>
