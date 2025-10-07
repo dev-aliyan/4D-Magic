@@ -5,10 +5,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MainComponent } from './component/main/main.component';
 import { SearchComponent } from './component/search/search.component';
-import { CityCardComponent } from './component/city-card/city-card.component';
 import {FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DashboardComponent } from './component/dashboard/dashboard.component';
-import { HttpClientModule } from '@angular/common/http'; 
+import { HttpClientModule } from '@angular/common/http';
+import { WeatherCardComponent } from './component/weather-card/weather-card.component';
+import { WeatherDashboardComponent } from './component/weather-dashboard/weather-dashboard.component'; 
 
 
 @NgModule({
@@ -16,8 +16,8 @@ import { HttpClientModule } from '@angular/common/http';
     AppComponent,
     MainComponent,
     SearchComponent,
-    CityCardComponent,
-    DashboardComponent
+    WeatherCardComponent,
+    WeatherDashboardComponent
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,27 @@
-<div class="search" [formGroup]="form">
-  <input 
-    #input 
-    formControlName="query" 
-    placeholder="Search city e.g. Karachi" />
-  <button (click)="onSearchClick()">Search</button>
+<div class="relative w-full max-w-md mx-auto mt-6">
+  <input
+    [formControl]="query"
+    type="text"
+    placeholder="Search for a city..."
+    class="w-full rounded-xl border border-gray-300 p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+  />
+
+  <ng-container *ngIf="results$ | async as results">
+    <ul
+      *ngIf="results.length > 0"
+      class="absolute z-10 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-2 max-h-60 overflow-auto"
+    >
+      <li
+        *ngFor="let item of results"
+        (click)="selectCity(item.name)"
+        class="p-3 cursor-pointer hover:bg-blue-50 transition-all"
+      >
+        {{ item.name }}, {{ item.sys?.country }}
+      </li>
+    </ul>
+
+    <div *ngIf="!results.length" class="text-gray-500 text-sm mt-2 text-center">
+      No results found
+    </div>
+  </ng-container>
 </div>

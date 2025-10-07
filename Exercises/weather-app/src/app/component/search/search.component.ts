@@ -1,45 +1,29 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { fromEvent } from 'rxjs';
-import { map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Component } from '@angular/core';
+import { WeatherService } from '../../services/weather.service';
+import { FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.css']
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent {
+  query = new FormControl('');
+  results$ = this.weatherService.searchResults$;
 
-  @Output() search = new EventEmitter<string>();
-  @ViewChild('input', { static: true }) inputRef!: ElementRef<HTMLInputElement>;
-
-  form: FormGroup;
-
-  constructor(private fb: FormBuilder) {
-    this.form = this.fb.group({
-      query: ['']
-    });
+  constructor(private weatherService: WeatherService) {
+    this.query.valueChanges
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        filter((val): val is string => !!val && val.trim().length > 0)
+      )
+      .subscribe((val) => this.weatherService.searchCity(val));
   }
 
-  ngOnInit(): void {
-    // listen to input changes with debounce
-    
-  }
-
-  onSearchClick() {
-    fromEvent(this.inputRef.nativeElement, 'input').pipe(
-      map((e: any) => (e.target as HTMLInputElement).value.trim()),
-      debounceTime(1000),             
-      distinctUntilChanged()         
-    ).subscribe(value => {
-      if (value.length >= 5) {      
-        this.search.emit(value);
-      }
-    });
-
-    const value = this.form.get('query')?.value?.trim();
-    if (value && value.length >= 5) {
-      this.search.emit(value);
-    }
+  selectCity(city: string) {
+    this.query.setValue(city);
+    this.weatherService.getWeather(city);
+    this.weatherService.searchCity(''); // clear dropdown
   }
 }
