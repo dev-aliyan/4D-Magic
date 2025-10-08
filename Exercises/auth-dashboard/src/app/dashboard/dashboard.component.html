@@ -1,0 +1,9 @@
+<div class="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+  <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full text-center">
+    <h2 class="text-3xl font-bold mb-4">Welcome, {{ user?.email }}</h2>
+    <p class="text-gray-600 mb-6">User ID: {{ user?.id }}</p>
+    <button (click)="logout()" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700">
+      Logout
+    </button>
+  </div>
+</div>
