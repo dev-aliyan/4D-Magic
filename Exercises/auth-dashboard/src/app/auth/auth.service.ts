@@ -9,18 +9,16 @@ import { concatMap, tap } from 'rxjs';
 export class AuthService {
   baseUrl = 'https://jsonplaceholder.typicode.com';
 
-  // baseUrl = 'https://reqres.in/api';
-
   constructor(private http: HttpClient, private authStore: AuthStoreService) { }
 
   login(email: string, password: string) {
-    return this.http.post<{ token: string }>(`${this.baseUrl}/login`, { email, password }).pipe(
+    return this.http.post<{ id: number }>(`${this.baseUrl}/posts`, { email, password }).pipe(
       concatMap(res => {
-        return this.http.get<User>(`${this.baseUrl}/users/2`).pipe(
-          tap(user => this.authStore.setUser({...user, token: res.token}))
-        )
+        return this.http.get<User>(`${this.baseUrl}/users/1`).pipe(
+          tap(user => this.authStore.setUser({ ...user, token: String(res.id) }))
+        );
       })
-    )
+    );
   }
 
   logout() {
