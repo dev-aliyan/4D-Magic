@@ -1,0 +1,7 @@
+.login-bg {
+  background-color: black;
+  background-image: url('/assets/images/auth.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
