@@ -1,7 +1,6 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-[#0b0b2a] to-[#1a1a40] py-12 px-4 sm:px-6 lg:px-8 text-white">
   <div class="max-w-3xl mx-auto backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl p-8">
     
-    <!-- Header -->
     <div class="mb-8 text-center">
       <h1 class="text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-400 to-blue-500 bg-clip-text text-transparent">
         Create New Issue
@@ -9,13 +8,10 @@
       <p class="text-gray-400 mt-2">Fill in the details below to create a new issue</p>
     </div>
 
-    <!-- Success & Error Messages -->
     <p-message *ngIf="success" severity="success" text="✅ Issue created successfully! Redirecting..." styleClass="mb-6 w-full"></p-message>
     <p-message *ngIf="error" severity="error" [text]="error" styleClass="mb-6 w-full"></p-message>
 
     <form (ngSubmit)="onSubmit()" class="space-y-8">
-      
-      <!-- Title -->
       <div>
         <label for="title" class="block text-sm font-semibold text-gray-300 mb-2">Issue Title <span class="text-pink-400">*</span></label>
         <input 
@@ -30,7 +26,6 @@
         <p class="text-xs text-gray-500 mt-1">Minimum 5 characters</p>
       </div>
 
-      <!-- Description -->
       <div>
         <label for="description" class="block text-sm font-semibold text-gray-300 mb-2">Description <span class="text-pink-400">*</span></label>
         <textarea 
@@ -47,9 +42,7 @@
         <p class="text-xs text-gray-500 mt-1">Minimum 10 characters</p>
       </div>
 
-      <!-- Estimated Time & Due Date -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Estimated Time -->
         <div>
           <label for="estimatedTime" class="block text-sm font-semibold text-gray-300 mb-2">Estimated Time (Hours) <span class="text-pink-400">*</span></label>
           <p-inputNumber 
@@ -67,7 +60,6 @@
           <p class="text-xs text-gray-500 mt-1">Between 1 and 1000 hours</p>
         </div>
 
-        <!-- Due Date -->
         <div>
           <label for="dueDate" class="block text-sm font-semibold text-gray-300 mb-2">Due Date <span class="text-pink-400">*</span></label>
           
@@ -89,8 +81,7 @@
         </div>
       </div>
 
-      <!-- Assign To -->
-      <div *ngIf="currentUser?.role == 'admin'">
+      <div>
         <label for="assignedTo" class="block text-sm font-semibold text-gray-300 mb-2">Assign To <span class="text-pink-400">*</span></label>
         <p-dropdown
           id="assignedTo"
@@ -141,7 +132,6 @@
     </form>
   </div>
 
-  <!-- Tips -->
   <div class="mt-10 max-w-3xl mx-auto bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-8">
     <h3 class="text-xl font-semibold text-white mb-6">Need Help?</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-300">

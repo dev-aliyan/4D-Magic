@@ -169,13 +169,12 @@
         </div>
 
         <div class="flex flex-wrap gap-4 pt-6 border-t border-white/10">
-          <button type="submit" class="theme-btn px-6 py-2 rounded-xl" [disabled]="loading || !hasChanges">Update Issue</button>
+          <button type="submit" class="bg-gradient-to-r from-pink-600 via-purple-700 to-blue-800 text-white shadow-lg hover:opacity-90 transition px-6 py-2 rounded-xl" [disabled]="loading || !hasChanges">Update Issue</button>
           <button type="button" class="px-6 py-2 rounded-xl bg-yellow-500/20 hover:bg-yellow-500/30 transition" (click)="resetForm()">Reset</button>
           <button type="button" class="px-6 py-2 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 transition" (click)="markAsCompleted()">Mark Completed</button>
           <button type="button" class="px-6 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 transition ml-auto" (click)="deleteIssue()">Delete</button>
           <button type="button" class="px-6 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition" (click)="onCancel()">Cancel</button>
         </div>
-
       </form>
     </div>
   </div>

@@ -53,6 +53,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.currentUser = this.authService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['/login']);
+      console.log('login from dashboard')
       return;
     }
 
@@ -60,7 +61,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.buildAssigneeOptions();
     this.loadIssues();
 
-    // Subscribe to issue updates if the service exposes an observable
     if (this.issueService.issues$ && this.issueService.issues$.subscribe) {
       this.issuesSub = this.issueService.issues$.subscribe(() => {
         this.loadIssues();
@@ -265,6 +265,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
+    console.log('logginggg outttt .....')
   }
 }

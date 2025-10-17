@@ -10,9 +10,11 @@ import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { DashboardComponent } from './dashboard.component';
 
+
 const routes: Routes = [
   { path: '', component: DashboardComponent }
 ];
+
 
 @NgModule({
   declarations: [DashboardComponent],

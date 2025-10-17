@@ -35,7 +35,6 @@ export class AuthService {
     }
   }
 
-  /** Login the user */
   login(email: string, password: string): boolean {
     const foundUser = this.users.find(
       (u) => u.email === email && u.password === password
@@ -50,7 +49,6 @@ export class AuthService {
     return false;
   }
 
-  /** Signup a new user */
   signup(user: User): void {
     const exists = this.users.find(u => u.email === user.email);
     if (exists) {
@@ -59,7 +57,7 @@ export class AuthService {
 
     const newUser: User = {
       ...user,
-      id: this.generateUserId(), // auto-generate ID like USR-001
+      id: this.generateUserId(), 
       createdAt: new Date(),
     };
 
@@ -70,7 +68,6 @@ export class AuthService {
     localStorage.setItem('currentUser', JSON.stringify(newUser));
   }
 
-  /** Generate unique user ID in format: USR-001, USR-002, etc. */
   private generateUserId(): string {
     if (!this.users || this.users.length === 0) {
       return 'USR-001';
@@ -83,13 +80,12 @@ export class AuthService {
   }
 
 
-  /** Logout the user */
   logout(): void {
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
+    console.log('log out from auth service')
   }
 
-  /** Get the current user synchronously */
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
@@ -110,7 +106,6 @@ export class AuthService {
 
 
 
-  /** Check if user is logged in */
   isLoggedIn(): boolean {
     return !!this.currentUserSubject.value;
   }

@@ -1,10 +1,11 @@
-// components/issue/edit-issue/edit-issue.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { IssueService } from '../../../services/issue.service';
 import { Issue } from '../../../models/issue';
 import { User } from '../../../models/user';
+import { NgZone } from '@angular/core';
+
 
 @Component({
   selector: 'app-edit-issue',
@@ -46,13 +47,15 @@ export class EditIssueComponent implements OnInit {
     private issueService: IssueService,
     private authService: AuthService,
     private route: ActivatedRoute,
-    public router: Router
+    public router: Router,
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['/login']);
+      console.log('login from issue creation')
       return;
     }
 
@@ -131,7 +134,6 @@ export class EditIssueComponent implements OnInit {
     this.error = '';
     this.success = false;
 
-    // Validation
     if (!this.title.trim()) {
       this.error = 'Issue title is required.';
       return;
@@ -202,8 +204,12 @@ export class EditIssueComponent implements OnInit {
       this.hasChanges = false;
 
       setTimeout(() => {
-        this.router.navigate(['/issue', this.issueId]);
-      }, 1500);
+        this.zone.run(() => {
+          this.router.navigate(['/issue', this.issueId]);
+        });
+      }, 0);
+
+
     } catch (err: any) {
       this.error = err.message || 'Failed to update issue. Please try again.';
     } finally {

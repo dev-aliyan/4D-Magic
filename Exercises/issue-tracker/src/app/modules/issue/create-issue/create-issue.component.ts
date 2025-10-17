@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { IssueService } from '../../../services/issue.service';
 import { User } from '../../../models/user';
+import { NgZone } from '@angular/core';
+
 
 @Component({
   selector: 'app-create-issue',
@@ -26,13 +28,15 @@ export class CreateIssueComponent implements OnInit {
   constructor(
     private issueService: IssueService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
     if (!this.currentUser) {
       this.router.navigate(['/login']);
+      console.log('login from create issue')
       return;
     }
 
@@ -105,8 +109,12 @@ export class CreateIssueComponent implements OnInit {
       this.resetForm();
 
       setTimeout(() => {
-        this.router.navigate(['/issue', newIssue.id]);
-      }, 1500);
+        this.zone.run(() => {
+          this.router.navigate(['/issue', newIssue.id]);
+        });
+      }, 0);
+
+
     } catch (err: any) {
       this.error = err.message || 'Failed to create issue. Please try again.';
     } finally {
@@ -124,6 +132,7 @@ export class CreateIssueComponent implements OnInit {
 
   onCancel(): void {
     this.router.navigate(['/dashboard']);
+    console.log('canceled')
   }
 
   getUserName(userId: string): string {
