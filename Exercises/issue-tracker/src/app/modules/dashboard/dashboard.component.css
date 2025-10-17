@@ -1,0 +1,13 @@
+
+
+.glass-card {
+  @apply backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl p-6 shadow-lg;
+}
+
+.glass-item {
+  @apply p-3 rounded-lg border border-white/20 backdrop-blur-md  transition;
+}
+
+.glass-dropdown {
+  @apply bg-white/10 border border-white/30 text-white rounded-md backdrop-blur-md;
+}

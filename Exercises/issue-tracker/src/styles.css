@@ -9,4 +9,133 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
 }
+
+
+$accent-from: #821D3F;
+$accent-mid: #37132F;
+$accent-mid2: #030A26;
+$accent-to: #3A3B92;
+
+.theme-input,
+.theme-dropdown .p-dropdown-label,
+.theme-calendar .p-inputtext,
+.theme-dropdown .p-dropdown-label,
+.theme-input[type="text"],
+.theme-input[type="search"],
+.theme-input[role="spinbutton"] {
+  background: rgba(255,255,255,0.06); /* white/10 */
+  border: 1px solid rgba(255,255,255,0.12); /* subtle white border */
+  color: #fff;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.5rem; /* rounded */
+  font-size: 0.95rem;
+  outline: none;
+  box-shadow: none;
+  transition: box-shadow 0.18s ease, transform 0.12s ease;
+}
+
+/* placeholder color */
+.theme-input::placeholder,
+.theme-input::-webkit-input-placeholder {
+  color: rgba(255,255,255,0.45);
+}
+
+/* focus ring — gradient border-like glow */
+.theme-input:focus,
+.theme-dropdown:focus-within,
+.theme-calendar:focus-within,
+.theme-number:focus-within {
+  box-shadow:
+    0 6px 18px rgba(58,59,146,0.12),
+    0 0 0 4px rgba(58,59,146,0.06);
+  transform: translateY(-1px);
+  border-color: rgba(58,59,146,0.6);
+}
+
+/* p-dropdown wrapper tweaks */
+.theme-dropdown {
+  background: rgba(255,255,255,0.04);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 0.125rem 0.25rem; /* keeps dropdown caret aligned */
+}
+
+/* label inside dropdown */
+.theme-dropdown .p-dropdown-label {
+  padding: 0.6rem 0.9rem;
+  color: #fff;
+}
+
+/* caret / icon color */
+.theme-dropdown .p-dropdown-trigger .p-dropdown-trigger-icon,
+.theme-calendar .p-datepicker-trigger .pi,
+.theme-input + .pi {
+  color: rgba(255,255,255,0.85);
+}
+
+/* dropdown panel (the list) */
+.theme-dropdown-panel {
+  background: linear-gradient(180deg, rgba(3,10,38,0.9), rgba(55,19,47,0.85));
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 12px 30px rgba(3,10,38,0.6);
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.35rem;
+}
+
+/* panel items */
+.theme-dropdown-panel .p-dropdown-item {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  color: #e8e8ff;
+}
+.theme-dropdown-panel .p-dropdown-item:hover,
+.theme-dropdown-panel .p-dropdown-item.p-highlight {
+  background: linear-gradient(90deg, $accent-from 0%, $accent-mid 40%, $accent-to 100%);
+  color: #fff;
+}
+
+/* calendar panel */
+.theme-dropdown-panel .p-datepicker {
+  background: transparent !important;
+  color: #fff;
+}
+
+/* input number style: PrimeNG uses inputStyleClass for inner input */
+.theme-number .p-inputnumber-input,
+.theme-input {
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  border-radius: 0.5rem;
+}
+
+/* small icons (clear icon) */
+.p-inputtext .p-inputtext-clear-icon,
+.theme-dropdown .p-dropdown-clear-icon {
+  color: rgba(255,255,255,0.65) !important;
+}
+
+/* active / selected tags (if multi select) */
+.theme-dropdown .p-tag {
+  background: rgba(58,59,146,0.14);
+  color: #eaeaff;
+  border-radius: 9999px;
+  padding: 0.15rem 0.5rem;
+}
+
+/* responsive padding tweaks */
+@media (min-width: 768px) {
+  .theme-input,
+  .theme-dropdown .p-dropdown-label {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Optional: animate caret on hover */
+.theme-dropdown:hover .p-dropdown-trigger .p-dropdown-trigger-icon {
+  transform: rotate(180deg);
+  transition: transform 0.25s ease;
+}
+
