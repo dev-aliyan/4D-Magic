@@ -81,7 +81,7 @@
         </div>
       </div>
 
-      <div>
+      <div *ngIf="currentUser?.role === 'admin'">
         <label for="assignedTo" class="block text-sm font-semibold text-gray-300 mb-2">Assign To <span class="text-pink-400">*</span></label>
         <p-dropdown
           id="assignedTo"
@@ -99,7 +99,6 @@
         <p class="text-xs text-gray-500 mt-1">Currently assigned to: {{ getUserName(assignedTo) }}</p>
       </div>
 
-      <!-- Info Box -->
       <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg p-5 flex gap-3">
         <i class="pi pi-info-circle text-blue-400 text-xl flex-shrink-0"></i>
         <div class="text-sm text-gray-300">
@@ -108,7 +107,6 @@
         </div>
       </div>
 
-      <!-- Buttons -->
       <div class="flex gap-4 pt-6 border-t border-white/10">
         <button 
           type="submit"
@@ -117,7 +115,7 @@
           hover:from-[#3A3B92] hover:via-[#370F2F] hover:to-[#821D3F]
           backdrop-blur-md border border-white/20
           disabled:opacity-50 disabled:cursor-not-allowed"
-          [disabled]="loading || !title || !description || !estimatedTime || !dueDate || !assignedTo">
+          [disabled]="loading || !title || !description || !estimatedTime || !dueDate || (currentUser?.role === 'admin' && !assignedTo)">
           <i class="pi pi-plus mr-2"></i> Create Issue
         </button>
 

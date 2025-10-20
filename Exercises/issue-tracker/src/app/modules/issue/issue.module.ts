@@ -14,14 +14,16 @@ import { ToastModule } from 'primeng/toast';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CreateIssueComponent } from './create-issue/create-issue.component';
 import { EditIssueComponent } from './edit-issue/edit-issue.component';
+import { ViewIssueComponent } from './view-issue/view-issue.component';
 
 const routes: Routes = [
   { path: 'create', component: CreateIssueComponent },
-  { path: 'edit/:id', component: EditIssueComponent }
+  { path: 'edit/:id', component: EditIssueComponent },
+  { path: ':id', component: ViewIssueComponent }
 ];
 
 @NgModule({
-  declarations: [CreateIssueComponent, EditIssueComponent],
+  declarations: [CreateIssueComponent, EditIssueComponent, ViewIssueComponent],
   imports: [
     CommonModule,
     FormsModule,
