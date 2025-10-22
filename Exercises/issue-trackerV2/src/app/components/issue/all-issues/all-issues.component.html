@@ -1,0 +1,144 @@
+<!-- <div class="backdrop-blur-lg border border-white/20 rounded-2xl shadow-lg overflow-hidden">
+      <div class="p-6 border-b border-white/10">
+        <h2 class="text-lg font-semibold text-white">All Issues</h2>
+      </div>
+
+      <div class="overflow-x-auto">
+        <p-table
+          [value]="filteredIssues"
+          responsiveLayout="scroll"
+          styleClass="w-full"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[5, 10, 20, 50]"
+          [tableStyle]="{ 'min-width': '50rem' }"
+        >
+          <ng-template pTemplate="header">
+            <th class="bg-white/5 text-white" pSortableColumn="id">ID </th>
+            <th class="bg-white/5 text-white" pSortableColumn="title">Title</th>
+            <th class="bg-white/5 text-white" pSortableColumn="state">State</th>
+            <th class="bg-white/5 text-white">Assigned To</th>
+            <th class="bg-white/5 text-white" pSortableColumn="estimatedTime">Est. Time</th>
+            <th class="bg-white/5 text-white" pSortableColumn="dueDate">Due Date</th>
+            <th class="bg-white/5 text-white">Actions</th>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-issue>
+            <tr class="bg-white/5 text-white">
+              <td class="font-bold text-white">{{ issue.id }}</td>
+              <td>
+                <div class="flex flex-col text-white">
+                  <span class="font-medium">{{ issue.title }}</span>
+                  <span class="text-xs text-gray-300 truncate">{{ issue.description | slice:0:60 }}...</span>
+                </div>
+              </td>
+              <td>
+                <p-tag [value]="issue.state | titlecase" [severity]="getStateSeverity(issue.state)"></p-tag>
+              </td>
+              <td class="text-sm ">{{ getUserName(issue.assignedTo) }}</td>
+              <td class="font-medium">{{ issue.estimatedTime }}h</td>
+              <td>{{ issue.dueDate | date: 'short' }}</td>
+              <td class="flex gap-2 justify-center">
+                <button
+                  (click)="viewIssue(issue)"
+                  class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-500 hover:bg-blue-600 text-white transition duration-200"
+                  title="View Issue"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                </button>
+
+                <button
+                  *ngIf="canEditIssue(issue)"
+                  (click)="editIssue(issue)"
+                  class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-yellow-500 hover:bg-yellow-600 text-white transition duration-200"
+                  title="Edit Issue"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                </button>
+                <button
+                  *ngIf="canDeleteIssue(issue)"
+                  (click)="deleteIssue(issue)"
+                  class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 text-white transition duration-200"
+                  title="Delete Issue"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                </button>
+
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="7" class="text-center py-8">
+                <i class="pi pi-inbox text-4xl text-gray-200 mb-3 block"></i>
+                <p class="text-gray-300">No issues found</p>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div> -->
+
+    <div class="card">
+  <p-table
+    [value]="filteredIssues"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[5, 10, 20, 50]"
+    responsiveLayout="scroll"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-semibold">All Issues</h2>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+        <th pSortableColumn="title">Title <p-sortIcon field="title"></p-sortIcon></th>
+        <th pSortableColumn="state">State <p-sortIcon field="state"></p-sortIcon></th>
+        <th>Assigned To</th>
+        <th pSortableColumn="estimatedTime">Est. Time <p-sortIcon field="estimatedTime"></p-sortIcon></th>
+        <th pSortableColumn="dueDate">Due Date <p-sortIcon field="dueDate"></p-sortIcon></th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-issue>
+      <tr>
+        <td>{{ issue.id }}</td>
+        <td>
+          <div class="flex flex-col">
+            <span class="font-medium">{{ issue.title }}</span>
+            <small class="text-color-secondary">{{ issue.description | slice:0:60 }}...</small>
+          </div>
+        </td>
+        <td>
+          <p-tag [value]="issue.state | titlecase" [severity]="getStateSeverity(issue.state)"></p-tag>
+        </td>
+        <td>{{ getUserName(issue.assignedTo) }}</td>
+        <td>{{ issue.estimatedTime }}h</td>
+        <td>{{ issue.dueDate | date: 'short' }}</td>
+        <td>
+          <div class="flex gap-2 justify-center">
+            <button pButton icon="pi pi-eye" class="p-button-rounded p-button-info" (click)="viewIssue(issue)"></button>
+            <button *ngIf="canEditIssue(issue)" pButton icon="pi pi-pencil" class="p-button-rounded p-button-warning" (click)="editIssue(issue)"></button>
+            <button *ngIf="canDeleteIssue(issue)" pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteIssue(issue)"></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="7" class="text-center">
+          <i class="pi pi-inbox text-4xl mb-3 block"></i>
+          <p>No issues found</p>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

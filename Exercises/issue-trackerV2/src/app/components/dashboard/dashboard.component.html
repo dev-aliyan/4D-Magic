@@ -1,0 +1,351 @@
+<!-- <div 
+  class="backdrop-blur-xl bg-white/5 border-b border-white/20 shadow-lg rounded-xl"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex justify-between items-center">
+
+     <div class="flex gap-4 items-center">
+      <div class="text-right ">
+        <p class="text-sm font-medium text-white">
+          {{ currentUser?.firstName }} {{ currentUser?.lastName }}
+        </p>
+        <p-tag 
+          rounded="true"
+          [value]="(currentUser?.role | titlecase) || ''"
+          [severity]="currentUser?.role === 'admin' ? 'danger' : 'info'">
+        </p-tag>
+      </div>
+
+      <button
+        pButton
+        type="button"
+        label="Logout"
+        icon="pi pi-sign-out"
+        class="py-2 px-4  bg-gradient-to-r from-pink-600 via-purple-700 to-blue-800 text-white rounded-lg shadow-lg hover:opacity-90 transition"
+        (click)="logout()"
+      ></button>
+    </div> 
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+   <div class="flex justify-end mb-6">
+      <button
+        pButton
+        type="button"
+        label="Create New Issue"
+        icon="pi pi-plus"
+        class="py-2 px-3 bg-gradient-to-r from-pink-600 via-purple-700 to-blue-800 text-white rounded-lg shadow-lg hover:opacity-90 transition"
+        (click)="createNewIssue()"
+      ></button>
+    </div> 
+
+    <div
+      class="backdrop-blur-lg bg-white/5 border border-white/20 rounded-2xl shadow-lg p-6 mb-10"
+    >
+      <h2 class="text-lg font-semibold text-white mb-4">Search & Filter</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="lg:col-span-2">
+          <label class="block text-sm font-medium text-gray-300 mb-2"
+            >Search Issues</label
+          >
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-search text-gray-400"></i>
+            <input
+              pInputText
+              type="text"
+              [(ngModel)]="searchTerm"
+              (keyup)="onSearch()"
+              placeholder="Search by title, ID, or assignee..."
+              class="w-full p-3.5 bg-white/5 rounded-xl border border-white/30 text-white placeholder-gray-400 focus:border-[#821D3F] focus:ring-1 focus:ring-[#821D3F]"
+            />
+          </span>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">State</label>
+          <p-dropdown
+            [(ngModel)]="selectedState"
+            [options]="stateOptions"
+            optionLabel="label"
+            optionValue="value"
+            (onChange)="onFilterChange()"
+            styleClass="theme-dropdown w-full"
+          ></p-dropdown>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2"
+            >Assigned To</label
+          >
+          <p-dropdown
+            [(ngModel)]="selectedAssignee"
+            [options]="assigneeOptions"
+            optionLabel="label"
+            optionValue="value"
+            (onChange)="onFilterChange()"
+            placeholder="All Users"
+          ></p-dropdown>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2"
+            >Sort By</label
+          >
+          <div class="flex gap-2">
+            <p-dropdown
+              [(ngModel)]="sortBy"
+              [options]="sortOptions"
+              optionLabel="label"
+              optionValue="value"
+              (onChange)="onSortChange()"
+              styleClass="theme-dropdown w-full flex-1"
+              [panelStyleClass]="'theme-dropdown-panel'"
+            ></p-dropdown>
+            <button
+              pButton
+              type="button"
+              [icon]="sortOrder === 'asc' ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
+              class="theme-btn-glass !p-2"
+              (click)="toggleSortOrder()"
+              pTooltip="Toggle sort order"
+              tooltipPosition="top"
+            ></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-white/10 pt-6">
+        <div class="text-center">
+          <p class="text-2xl font-bold text-[#3A3B92]">{{ filteredIssues.length }}</p>
+          <p class="text-sm text-gray-300">Total Issues</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-yellow-400">{{ getCountByState('in-progress') }}</p>
+          <p class="text-sm text-gray-300">In Progress</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-green-400">{{ getCountByState('completed') }}</p>
+          <p class="text-sm text-gray-300">Completed</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-red-400">{{ getCountByState('blocked') }}</p>
+          <p class="text-sm text-gray-300">Blocked</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+      <div class="glass-card">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <i class="pi pi-clock text-[#3A3B92]"></i> Recent Issues
+        </h3>
+        <div class="space-y-3 max-h-96 overflow-y-auto">
+          <ng-container *ngIf="getRecentIssues().length > 0; else noRecent">
+            <div
+              *ngFor="let issue of getRecentIssues()"
+              class="glass-item hover:bg-white/20 cursor-pointer"
+              (click)="viewIssue(issue)"
+            >
+              <p class="font-medium text-sm">{{ issue.id }}</p>
+              <p class="text-xs text-gray-300 truncate">{{ issue.title }}</p>
+              <p class="text-xs text-gray-400 mt-1">
+                {{ issue.createdAt | date: 'short' }}
+              </p>
+            </div>
+          </ng-container>
+          <ng-template #noRecent>
+            <p class="text-gray-400 text-sm text-center py-4">No recent issues</p>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <i class="pi pi-spinner text-yellow-400"></i> In Progress
+        </h3>
+        <div class="space-y-3 max-h-96 overflow-y-auto">
+          <ng-container *ngIf="getIssuesByState('in-progress').length > 0; else noProgress">
+            <div
+              *ngFor="let issue of getIssuesByState('in-progress')"
+              class="glass-item border-l-4 border-yellow-400"
+              (click)="viewIssue(issue)"
+            >
+              <p class="font-medium text-sm">{{ issue.id }}</p>
+              <p class="text-xs text-gray-300 truncate">{{ issue.title }}</p>
+              <p class="text-xs text-gray-400 mt-1">
+                Assigned: {{ getUserName(issue.assignedTo) }}
+              </p>
+            </div>
+          </ng-container>
+          <ng-template #noProgress>
+            <p class="text-gray-400 text-sm text-center py-4">No issues in progress</p>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <i class="pi pi-exclamation-circle text-red-400"></i> Pending
+        </h3>
+        <div class="space-y-3 max-h-96 overflow-y-auto">
+          <ng-container *ngIf="getPendingIssues().length > 0; else noPending">
+            <div
+              *ngFor="let issue of getPendingIssues()"
+              class="glass-item border-l-4 border-red-400"
+              (click)="viewIssue(issue)"
+            >
+              <p class="font-medium text-sm">{{ issue.id }}</p>
+              <p class="text-xs text-gray-300 truncate">{{ issue.title }}</p>
+              <p-tag
+                [value]="issue.state | titlecase"
+                [severity]="issue.state === 'blocked' ? 'danger' : 'warning'"
+                class="mt-2 text-xs"
+              ></p-tag>
+            </div>
+          </ng-container>
+          <ng-template #noPending>
+            <p class="text-gray-400 text-sm text-center py-4">No pending issues</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <div class="backdrop-blur-lg bg-white/5 border border-white/20 rounded-2xl shadow-lg overflow-hidden">
+      <div class="p-6 border-b border-white/10">
+        <h2 class="text-lg font-semibold text-white">All Issues</h2>
+      </div>
+
+      <div class="overflow-x-auto">
+        <app-all-issues></app-all-issues>
+      </div>
+    </div>
+  </div>
+</div>
+ -->
+
+
+ <div class="min-h-screen bg-gradient-to-r from-[#030A26] via-[#37132F] to-[#821D3F] text-white px-6 py-10">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+    <h1 class="text-3xl font-semibold tracking-wide">Dashboard</h1>
+
+    <!-- Filters + Search -->
+    <div class="flex flex-wrap items-center gap-3">
+      <input
+        type="text"
+        pInputText
+        placeholder="Search issues..."
+        [(ngModel)]="searchTerm"
+        class="p-inputtext-sm bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-300"
+      />
+
+      <p-dropdown
+        [options]="statusOptions"
+        [(ngModel)]="selectedStatus"
+        placeholder="Status"
+        class="p-inputtext-sm bg-white/10 border border-white/20 text-white rounded-lg"
+      ></p-dropdown>
+
+      <p-dropdown
+        [options]="priorityOptions"
+        [(ngModel)]="selectedPriority"
+        placeholder="Priority"
+        class="p-inputtext-sm bg-white/10 border border-white/20 text-white rounded-lg"
+      ></p-dropdown>
+
+      <div class="flex bg-white/10 rounded-lg overflow-hidden border border-white/20">
+        <button
+          class="px-4 py-2 text-sm transition-all duration-300"
+          [ngClass]="view === 'kanban' ? 'bg-purple-600' : 'hover:bg-white/10'"
+          (click)="switchView('kanban')"
+        >
+          Kanban
+        </button>
+        <button
+          class="px-4 py-2 text-sm transition-all duration-300"
+          [ngClass]="view === 'table' ? 'bg-purple-600' : 'hover:bg-white/10'"
+          (click)="switchView('table')"
+        >
+          Table
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kanban View (PickList) -->
+  <div *ngIf="view === 'kanban'" class="glass p-6 rounded-2xl shadow-lg">
+    <h2 class="text-xl font-medium mb-4">Drag and Drop Issues</h2>
+    <p-pickList
+      [source]="todoIssues"
+      [target]="doneIssues"
+      sourceHeader="To Do / In Progress"
+      targetHeader="Done"
+      dragdrop="true"
+      [responsive]="true"
+      [showSourceControls]="false"
+      [showTargetControls]="false"
+      [sourceStyle]="{ 'min-height': '400px' }"
+      [targetStyle]="{ 'min-height': '400px' }"
+    >
+      <ng-template let-issue pTemplate="item">
+        <div
+          class="bg-white/10 p-3 rounded-lg shadow hover:bg-white/20 transition cursor-move"
+        >
+          <div class="font-semibold">{{ issue.title }}</div>
+          <div class="text-sm opacity-80">{{ issue.description }}</div>
+          <div class="text-xs mt-2">
+            <span
+              class="px-2 py-1 rounded bg-purple-600 text-white mr-2"
+              >{{ issue.status }}</span
+            >
+            <span
+              class="px-2 py-1 rounded bg-pink-600 text-white"
+              >{{ issue.priority }}</span
+            >
+          </div>
+        </div>
+      </ng-template>
+    </p-pickList>
+  </div>
+
+  <div *ngIf="view === 'table'" class="glass p-6 rounded-2xl shadow-lg">
+    <h2 class="text-xl font-medium mb-4">All Issues</h2>
+    <p-table
+      [value]="filteredIssues"
+      [paginator]="true"
+      [rows]="5"
+      responsiveLayout="scroll"
+      class="text-white"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Priority</th>
+          <th>Due Date</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-issue>
+        <tr>
+          <td>{{ issue.title }}</td>
+          <td>{{ issue.description }}</td>
+          <td><p-tag [value]="issue.status" severity="info"></p-tag></td>
+          <td>
+            <p-tag
+              [value]="issue.priority"
+              [severity]="
+                issue.priority === 'High'
+                  ? 'danger'
+                  : issue.priority === 'Medium'
+                  ? 'warning'
+                  : 'success'
+              "
+            ></p-tag>
+          </td>
+          <td>{{ issue.dueDate | date: 'mediumDate' }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
