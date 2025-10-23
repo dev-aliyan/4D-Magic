@@ -279,11 +279,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   viewIssue(issue: Issue): void {
-    this.router.navigate(['/issue', issue.id]);
+    this.router.navigate(['issue', issue.id]);
   }
 
   editIssue(issue: Issue): void {
-    this.router.navigate(['/issue/edit', issue.id]);
+    this.router.navigate(['issue/edit', issue.id]);
+    console.log('editing issue ....', issue.id, this.router.url)
   }
 
   deleteIssue(issue: Issue): void {
@@ -299,6 +300,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   createNewIssue(): void {
     this.router.navigate(['/issue/create']);
+    console.log(this.router.navigate(['/issue/create']));
   }
 
   logout(): void {

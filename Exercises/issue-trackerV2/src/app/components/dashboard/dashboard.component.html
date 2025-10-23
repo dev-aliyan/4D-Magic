@@ -1,7 +1,7 @@
-<!-- <div 
+<div 
   class="backdrop-blur-xl bg-white/5 border-b border-white/20 shadow-lg rounded-xl"
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex justify-between items-center">
+  <!-- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex justify-between items-center">
 
      <div class="flex gap-4 items-center">
       <div class="text-right ">
@@ -24,10 +24,10 @@
         (click)="logout()"
       ></button>
     </div> 
-  </div>
+  </div> -->
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-   <div class="flex justify-end mb-6">
+   <!-- <div class="flex justify-end mb-6">
       <button
         pButton
         type="button"
@@ -36,7 +36,7 @@
         class="py-2 px-3 bg-gradient-to-r from-pink-600 via-purple-700 to-blue-800 text-white rounded-lg shadow-lg hover:opacity-90 transition"
         (click)="createNewIssue()"
       ></button>
-    </div> 
+    </div>  -->
 
     <div
       class="backdrop-blur-lg bg-white/5 border border-white/20 rounded-2xl shadow-lg p-6 mb-10"
@@ -191,7 +191,7 @@
           <ng-container *ngIf="getPendingIssues().length > 0; else noPending">
             <div
               *ngFor="let issue of getPendingIssues()"
-              class="glass-item border-l-4 border-red-400"
+              class=" border-red-400"
               (click)="viewIssue(issue)"
             >
               <p class="font-medium text-sm">{{ issue.id }}</p>
@@ -221,131 +221,4 @@
     </div>
   </div>
 </div>
- -->
 
-
- <div class="min-h-screen bg-gradient-to-r from-[#030A26] via-[#37132F] to-[#821D3F] text-white px-6 py-10">
-  <!-- Header -->
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-    <h1 class="text-3xl font-semibold tracking-wide">Dashboard</h1>
-
-    <!-- Filters + Search -->
-    <div class="flex flex-wrap items-center gap-3">
-      <input
-        type="text"
-        pInputText
-        placeholder="Search issues..."
-        [(ngModel)]="searchTerm"
-        class="p-inputtext-sm bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-300"
-      />
-
-      <p-dropdown
-        [options]="statusOptions"
-        [(ngModel)]="selectedStatus"
-        placeholder="Status"
-        class="p-inputtext-sm bg-white/10 border border-white/20 text-white rounded-lg"
-      ></p-dropdown>
-
-      <p-dropdown
-        [options]="priorityOptions"
-        [(ngModel)]="selectedPriority"
-        placeholder="Priority"
-        class="p-inputtext-sm bg-white/10 border border-white/20 text-white rounded-lg"
-      ></p-dropdown>
-
-      <div class="flex bg-white/10 rounded-lg overflow-hidden border border-white/20">
-        <button
-          class="px-4 py-2 text-sm transition-all duration-300"
-          [ngClass]="view === 'kanban' ? 'bg-purple-600' : 'hover:bg-white/10'"
-          (click)="switchView('kanban')"
-        >
-          Kanban
-        </button>
-        <button
-          class="px-4 py-2 text-sm transition-all duration-300"
-          [ngClass]="view === 'table' ? 'bg-purple-600' : 'hover:bg-white/10'"
-          (click)="switchView('table')"
-        >
-          Table
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Kanban View (PickList) -->
-  <div *ngIf="view === 'kanban'" class="glass p-6 rounded-2xl shadow-lg">
-    <h2 class="text-xl font-medium mb-4">Drag and Drop Issues</h2>
-    <p-pickList
-      [source]="todoIssues"
-      [target]="doneIssues"
-      sourceHeader="To Do / In Progress"
-      targetHeader="Done"
-      dragdrop="true"
-      [responsive]="true"
-      [showSourceControls]="false"
-      [showTargetControls]="false"
-      [sourceStyle]="{ 'min-height': '400px' }"
-      [targetStyle]="{ 'min-height': '400px' }"
-    >
-      <ng-template let-issue pTemplate="item">
-        <div
-          class="bg-white/10 p-3 rounded-lg shadow hover:bg-white/20 transition cursor-move"
-        >
-          <div class="font-semibold">{{ issue.title }}</div>
-          <div class="text-sm opacity-80">{{ issue.description }}</div>
-          <div class="text-xs mt-2">
-            <span
-              class="px-2 py-1 rounded bg-purple-600 text-white mr-2"
-              >{{ issue.status }}</span
-            >
-            <span
-              class="px-2 py-1 rounded bg-pink-600 text-white"
-              >{{ issue.priority }}</span
-            >
-          </div>
-        </div>
-      </ng-template>
-    </p-pickList>
-  </div>
-
-  <div *ngIf="view === 'table'" class="glass p-6 rounded-2xl shadow-lg">
-    <h2 class="text-xl font-medium mb-4">All Issues</h2>
-    <p-table
-      [value]="filteredIssues"
-      [paginator]="true"
-      [rows]="5"
-      responsiveLayout="scroll"
-      class="text-white"
-    >
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Status</th>
-          <th>Priority</th>
-          <th>Due Date</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-issue>
-        <tr>
-          <td>{{ issue.title }}</td>
-          <td>{{ issue.description }}</td>
-          <td><p-tag [value]="issue.status" severity="info"></p-tag></td>
-          <td>
-            <p-tag
-              [value]="issue.priority"
-              [severity]="
-                issue.priority === 'High'
-                  ? 'danger'
-                  : issue.priority === 'Medium'
-                  ? 'warning'
-                  : 'success'
-              "
-            ></p-tag>
-          </td>
-          <td>{{ issue.dueDate | date: 'mediumDate' }}</td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </div>
-</div>

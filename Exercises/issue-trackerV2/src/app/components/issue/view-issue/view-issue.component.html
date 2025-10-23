@@ -1,5 +1,4 @@
-<div class="min-h-screen bg-gradient-to-br from-[#030A26] via-[#370F2F] to-[#821D3F] py-12 px-4 sm:px-6 lg:px-8 text-white">
-  <div class="max-w-4xl mx-auto">
+  <div class="mx-auto">
     
     <div class="flex items-center gap-3 mb-8">
       <button 
@@ -7,7 +6,7 @@
         (click)="goBack()">
         <i class="pi pi-arrow-left text-white"></i>
       </button>
-      <h1 class="text-4xl font-bold tracking-wide">Issue Details</h1>
+      <h1 class="text-4xl font-bold tracking-wide text-white">Issue Details</h1>
     </div>
 
     <div *ngIf="loading && !issue" class="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl p-12 text-center">
@@ -164,4 +163,3 @@
 
     </div>
   </div>
-</div>
