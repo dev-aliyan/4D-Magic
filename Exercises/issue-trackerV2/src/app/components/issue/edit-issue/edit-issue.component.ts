@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
 import { IssueService } from '../../../services/issue/issue.service';
 import { UserService } from '../../../services/user/user.service';
 import { Issue } from '../../../models/issue';
 import { User } from '../../../models/user';
-import { NgZone } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
@@ -18,33 +19,23 @@ import { MessagesModule } from 'primeng/messages';
 import { ToastModule } from 'primeng/toast';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
-
 @Component({
   selector: 'app-edit-issue',
   templateUrl: './edit-issue.component.html',
   standalone: true,
   imports: [
-    CommonModule,
-    FormsModule,
-    InputTextModule,
-    InputTextareaModule,
-    DropdownModule,
-    CalendarModule,
-    InputNumberModule,
-    ButtonModule,
-    MessageModule,
-    MessagesModule,
-    ToastModule,
-    ProgressSpinnerModule
+    CommonModule, FormsModule,
+    InputTextModule, InputTextareaModule, DropdownModule, CalendarModule,
+    InputNumberModule, ButtonModule, MessageModule, MessagesModule, ToastModule, ProgressSpinnerModule
   ]
 })
-
 export class EditIssueComponent implements OnInit {
-  issueId: string = '';
+  issueId = '';
   issue: Issue | null = null;
+
   title = '';
   description = '';
-  state: string = '';
+  state: 'new' | 'in-progress' | 'completed' | 'blocked' = 'new';
   assignedTo = '';
   estimatedTime: number | null = null;
   completedTime: number | null = null;
@@ -65,8 +56,7 @@ export class EditIssueComponent implements OnInit {
     { label: 'Blocked', value: 'blocked' }
   ];
 
-  userOptions: any[] = [];
-
+  userOptions: { label: string; value: string }[] = [];
   originalIssue: Issue | null = null;
   hasChanges = false;
 
@@ -81,8 +71,7 @@ export class EditIssueComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = this.userService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['/login']);
-      console.log('login from issue creation')
+      this.router.navigate(['/auth/login']);
       return;
     }
 
@@ -96,10 +85,7 @@ export class EditIssueComponent implements OnInit {
   }
 
   buildUserOptions(): void {
-    this.userOptions = this.allUsers.map(user => ({
-      label: `${user.firstName} ${user.lastName}`,
-      value: user.id
-    }));
+    this.userOptions = this.allUsers.map(u => ({ label: `${u.firstName} ${u.lastName}`, value: u.id }));
   }
 
   loadIssue(): void {
@@ -120,9 +106,11 @@ export class EditIssueComponent implements OnInit {
       return;
     }
 
+    // snapshot for change detection
     this.originalIssue = JSON.parse(JSON.stringify(foundIssue));
     this.issue = foundIssue;
 
+    // bind fields
     this.title = foundIssue.title;
     this.description = foundIssue.description;
     this.state = foundIssue.state;
@@ -134,20 +122,11 @@ export class EditIssueComponent implements OnInit {
     this.loading = false;
   }
 
-  onInputChange(): void {
-    this.checkForChanges();
-  }
-
-  onValueChange(event: any): void {
-    console.log('State changed to:', event.value);
-    this.checkForChanges();
-  }
-
+  onInputChange(): void { this.checkForChanges(); }
 
   checkForChanges(): void {
     if (!this.originalIssue) return;
-
-    this.hasChanges = 
+    this.hasChanges =
       this.title !== this.originalIssue.title ||
       this.description !== this.originalIssue.description ||
       this.state !== this.originalIssue.state ||
@@ -157,88 +136,42 @@ export class EditIssueComponent implements OnInit {
       new Date(this.dueDate || '').getTime() !== new Date(this.originalIssue.dueDate).getTime();
   }
 
-  onSubmit(): void {
+  onSubmit(event?: Event): void {
+    event?.preventDefault();
     this.error = '';
     this.success = false;
 
-    if (!this.title.trim()) {
-      this.error = 'Issue title is required.';
-      return;
-    }
-
-    if (this.title.trim().length < 5) {
-      this.error = 'Issue title must be at least 5 characters long.';
-      return;
-    }
-
-    if (!this.description.trim()) {
-      this.error = 'Issue description is required.';
-      return;
-    }
-
-    if (this.description.trim().length < 10) {
-      this.error = 'Issue description must be at least 10 characters long.';
-      return;
-    }
-
-    if (!this.estimatedTime || this.estimatedTime <= 0) {
-      this.error = 'Estimated time must be greater than 0 hours.';
-      return;
-    }
-
-    if (this.estimatedTime > 1000) {
-      this.error = 'Estimated time cannot exceed 1000 hours.';
-      return;
-    }
-
-    if (!this.completedTime || this.completedTime < 0) {
-      this.error = 'Completed time cannot be negative.';
-      return;
-    }
-
-    if (this.completedTime > 1000) {
-      this.error = 'Completed time cannot exceed 1000 hours.';
-      return;
-    }
-
-    if (!this.dueDate) {
-      this.error = 'Due date is required.';
-      return;
-    }
-
-    if (!this.assignedTo) {
-      this.error = 'Please assign this issue to a user.';
-      return;
-    }
+    // validations
+    if (!this.title.trim() || this.title.trim().length < 5) { this.error = 'Issue title must be at least 5 characters long.'; return; }
+    if (!this.description.trim() || this.description.trim().length < 10) { this.error = 'Issue description must be at least 10 characters long.'; return; }
+    if (!this.estimatedTime || this.estimatedTime <= 0 || this.estimatedTime > 1000) { this.error = 'Estimated time must be between 1 and 1000 hours.'; return; }
+    if (this.completedTime == null || this.completedTime < 0 || this.completedTime > 1000) { this.error = 'Completed time must be between 0 and 1000 hours.'; return; }
+    if (!this.dueDate) { this.error = 'Due date is required.'; return; }
+    if (!this.assignedTo) { this.error = 'Please assign this issue to a user.'; return; }
 
     this.loading = true;
-
     try {
-      const updates = {
+      this.issueService.updateIssue(this.issueId, {
         title: this.title.trim(),
         description: this.description.trim(),
-        state: this.state as 'new' | 'in-progress' | 'completed' | 'blocked',
+        state: this.state,
         estimatedTime: this.estimatedTime!,
         completedTime: this.completedTime!,
-        dueDate: this.dueDate as Date,
+        dueDate: this.dueDate,
         assignedTo: this.assignedTo
-      };
-
-      this.issueService.updateIssue(this.issueId, updates);
+      });
 
       this.success = true;
       this.originalIssue = JSON.parse(JSON.stringify(this.issue));
       this.hasChanges = false;
 
+      // ✅ navigate to the correct view route under dashboard
       setTimeout(() => {
-        this.zone.run(() => {
-          this.router.navigate(['/issue', this.issueId]);
-        });
+        this.zone.run(() => this.router.navigate(['/dashboard', 'issue', this.issueId]));
       }, 0);
 
-
     } catch (err: any) {
-      this.error = err.message || 'Failed to update issue. Please try again.';
+      this.error = err?.message || 'Failed to update issue. Please try again.';
     } finally {
       this.loading = false;
     }
@@ -256,7 +189,6 @@ export class EditIssueComponent implements OnInit {
 
   resetForm(): void {
     if (!this.originalIssue) return;
-
     this.title = this.originalIssue.title;
     this.description = this.originalIssue.description;
     this.state = this.originalIssue.state;
@@ -268,58 +200,14 @@ export class EditIssueComponent implements OnInit {
     this.hasChanges = false;
   }
 
-  getMinDueDate(): Date {
-    return new Date();
-  }
-
-  getUserName(userId: string): string {
-    const user = this.allUsers.find(u => u.id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : 'Unknown';
-  }
-
-  getCreatorName(userId: string): string {
-    const user = this.allUsers.find(u => u.id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : 'Unknown';
-  }
-
-  calculateDelay(): number {
-    if (!this.issue) return 0;
-    return this.issueService.calculateDelay(this.issue);
-  }
-
-  getStateColor(state: string): string {
-    switch (state) {
-      case 'new':
-        return 'bg-blue-100 text-blue-800';
-      case 'in-progress':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'completed':
-        return 'bg-green-100 text-green-800';
-      case 'blocked':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  }
-
-  canMarkAsCompleted(): boolean {
-    return this.state === 'completed' && this.completedTime === 0;
-  }
-
   markAsCompleted(): void {
     this.state = 'completed';
-    this.completedTime = this.estimatedTime;
+    this.completedTime = this.estimatedTime || 0;
     this.checkForChanges();
   }
 
-  deleteIssue(): void {
-    if (confirm(`Are you sure you want to delete issue ${this.issueId}? This action cannot be undone.`)) {
-      try {
-        this.issueService.deleteIssue(this.issueId);
-        this.router.navigate(['/dashboard']);
-      } catch (err: any) {
-        alert(err.message);
-      }
-    }
+  getCreatorName(id: string): string {
+    const u = this.allUsers.find(x => x.id === id);
+    return u ? `${u.firstName} ${u.lastName}` : 'Unknown';
   }
 }

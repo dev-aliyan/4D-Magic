@@ -1,9 +1,7 @@
-  <div class=" mx-auto backdrop-blur-lg bg-white/10 border border-white/20 shadow-2xl rounded-2xl p-8">
-    
+<div class="min-h-screen p-8 bg-gradient-to-br from-[#030A26] via-[#37132F] to-[#821D3F] flex justify-center items-center">
+  <div class="mx-auto backdrop-blur-lg bg-white/10 border border-white/20 shadow-2xl rounded-2xl p-8 w-full max-w-5xl">
     <div class="flex items-center gap-3 mb-8">
-      <button 
-        class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition"
-        (click)="onCancel()">
+      <button class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition" (click)="onCancel()">
         <i class="pi pi-arrow-left text-white"></i>
       </button>
       <h1 class="text-3xl font-bold tracking-wide">Edit Issue</h1>
@@ -60,50 +58,49 @@
         </div>
       </div>
 
-      <form (ngSubmit)="onSubmit()" class="space-y-6">
-        
+      <form (ngSubmit)="onSubmit($event)" class="space-y-6" novalidate>
         <div>
           <label class="block text-sm font-semibold mb-2">Title</label>
-          <input 
-            pInputText 
+          <input
+            pInputText
             [(ngModel)]="title"
             (input)="onInputChange()"
             name="title"
             placeholder="Enter issue title"
             class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            required>
+            required />
         </div>
 
         <div>
           <label class="block text-sm font-semibold mb-2">Description</label>
-          <textarea 
-            pInputTextarea 
+          <textarea
+            pInputTextarea
             [(ngModel)]="description"
             (input)="onInputChange()"
             name="description"
             rows="5"
             placeholder="Issue description"
             class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            required>
-          </textarea>
+            required></textarea>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label class="block text-sm font-semibold mb-2">State</label>
-            <p-dropdown 
+            <p-dropdown
               [(ngModel)]="state"
               (onChange)="onInputChange()"
               name="state"
               [options]="stateOptions"
               optionLabel="label"
+              optionValue="value"
               [disabled]="loading">
             </p-dropdown>
           </div>
 
           <div>
             <label class="block text-sm font-semibold mb-2">Assigned To</label>
-            <p-dropdown 
+            <p-dropdown
               [(ngModel)]="assignedTo"
               (onChange)="onInputChange()"
               name="assignedTo"
@@ -118,27 +115,24 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label class="block text-sm font-semibold mb-2">Estimated Time (hrs)</label>
-            <p-inputNumber 
+            <p-inputNumber
               [(ngModel)]="estimatedTime"
               (onInput)="onInputChange()"
               name="estimatedTime"
               [min]="1"
               [max]="1000"
-              styleClass="theme-dropdown"
-              inputStyleClass="theme-input"
               [disabled]="loading">
             </p-inputNumber>
           </div>
 
           <div>
             <label class="block text-sm font-semibold mb-2">Completed Time (hrs)</label>
-            <p-inputNumber 
+            <p-inputNumber
               [(ngModel)]="completedTime"
               (onInput)="onInputChange()"
               name="completedTime"
               [min]="0"
               [max]="1000"
-              inputStyleClass="w-full bg-white/10 border border-white/20 rounded-lg text-white p-2"
               [disabled]="loading">
             </p-inputNumber>
           </div>
@@ -146,10 +140,10 @@
 
         <div>
           <label class="block text-sm font-semibold mb-2">Due Date</label>
-          <p-calendar 
+          <p-calendar
             [(ngModel)]="dueDate"
             name="dueDate"
-            (input)="onInputChange()"
+            (onSelect)="onInputChange()"
             [showIcon]="true"
             inputStyleClass="bg-white/10 border border-white/20 text-white placeholder-gray-400 rounded-lg p-3 focus:ring-2 focus:ring-purple-500"
             styleClass="theme-calendar w-full"
@@ -166,9 +160,9 @@
           <button type="submit" class="bg-gradient-to-r from-pink-600 via-purple-700 to-blue-800 text-white shadow-lg hover:opacity-90 transition px-6 py-2 rounded-xl" [disabled]="loading || !hasChanges">Update Issue</button>
           <button type="button" class="px-6 py-2 rounded-xl bg-yellow-500/20 hover:bg-yellow-500/30 transition" (click)="resetForm()">Reset</button>
           <button type="button" class="px-6 py-2 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 transition" (click)="markAsCompleted()">Mark Completed</button>
-          <button type="button" class="px-6 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 transition ml-auto" (click)="deleteIssue()">Delete</button>
           <button type="button" class="px-6 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition" (click)="onCancel()">Cancel</button>
         </div>
       </form>
     </div>
   </div>
+</div>

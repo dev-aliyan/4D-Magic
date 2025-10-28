@@ -1,311 +1,120 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { Issue } from '../../models/issue';
-import { User } from '../../models/user';
-import { AuthService } from '../../services/auth/auth.service';
+import { Component, computed, effect, signal } from '@angular/core';
+import { CommonModule, TitleCasePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
 import { IssueService } from '../../services/issue/issue.service';
 import { UserService } from '../../services/user/user.service';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Issue } from '../../models/issue';
+import { User } from '../../models/user';
+
+/// PrimeNG
+import { Card, CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { DropdownModule } from 'primeng/dropdown';
-import { CalendarModule } from 'primeng/calendar';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
-import { ToastModule } from 'primeng/toast';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
-import { DatePipe } from '@angular/common';
+import { ChipModule } from 'primeng/chip';
+import { TabViewModule } from 'primeng/tabview';
+import { TableModule } from 'primeng/table';
+import { RippleModule } from 'primeng/ripple';
+import { TooltipModule } from 'primeng/tooltip';
+import { FormsModule } from '@angular/forms';
+import { InputTextareaModule } from "primeng/inputtextarea";
+import { ViewEncapsulation } from '@angular/core';
 
-import { AllIssuesComponent } from '../issue/all-issues/all-issues.component';
 
-type TagSeverity = 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined;
 
+type StateKey = Issue['state'];
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
   standalone: true,
-
+  selector: 'app-dashboard',
   imports: [
-    CommonModule, 
-    FormsModule, 
-    InputTextModule, 
-    InputTextareaModule, 
-    DropdownModule, 
-    CalendarModule, 
-    InputNumberModule, 
-    ButtonModule, 
-    MessageModule, 
-    ToastModule, 
-    ProgressSpinnerModule,
-    TableModule,
-    TagModule,
-    DatePipe,
-    AllIssuesComponent,
-  ]
+    CommonModule, RouterLink, TitleCasePipe, FormsModule,
+    InputTextModule, ButtonModule, TagModule, CardModule,
+    ChipModule, TabViewModule, TableModule, RippleModule,
+    TooltipModule, TitleCasePipe,
+    InputTextareaModule
+],
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent {
 
-  issues: Issue[] = [];
-  filteredIssues: Issue[] = [];
-  allUsers: User[] = [];
-  currentUser: User | null = null;
-  
-  searchTerm = '';
-  selectedState: string | '' = '';
-  selectedAssignee: string | '' = '';
-  sortBy: string = 'createdAt';
-  sortOrder: 'asc' | 'desc' = 'desc';
+  private allIssues = signal<Issue[]>([]);
+  private users = signal<User[]>([]);
 
-  stateOptions = [
-    { label: 'All States', value: '' },
-    { label: 'New', value: 'new' },
-    { label: 'In Progress', value: 'in-progress' },
-    { label: 'Completed', value: 'completed' },
-    { label: 'Blocked', value: 'blocked' }
-  ];
+  search = signal<string>('');
+  stateFilter = signal<StateKey | 'all'>('all');
+  myOnly = signal<boolean>(false);
 
-  sortOptions = [
-    { label: 'Created Date', value: 'createdAt' },
-    { label: 'Due Date', value: 'dueDate' },
-    { label: 'Updated Date', value: 'updatedAt' }
-  ];
-
-  assigneeOptions: any[] = [];
-
-  private issuesSub: Subscription | null = null;
+  currentUser = signal<User | null>(null);
 
   constructor(
-    private issueService: IssueService,
-    private authService: AuthService,
-    private userService: UserService,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.currentUser = this.userService.getCurrentUser();
-    if (!this.currentUser) {
-      this.router.navigate(['/login']);
-      console.log('login from dashboard')
-      return;
-    }
-
-    this.allUsers = this.userService.getAllUsers() || [];
-    this.buildAssigneeOptions();
-    this.loadIssues();
-
-    if (this.issueService.issues$ && this.issueService.issues$.subscribe) {
-      this.issuesSub = this.issueService.issues$.subscribe(() => {
-        this.loadIssues();
-      });
-    }
+    private issueSvc: IssueService,
+    private userSvc: UserService
+  ) {
+    this.allIssues.set(this.issueSvc.getAllIssues());
+    this.users.set(this.userSvc.getAllUsers());
+    this.currentUser.set(this.userSvc.getCurrentUser());
+    this.issueSvc.issues$.subscribe(list => this.allIssues.set(list));
   }
 
-  ngOnDestroy(): void {
-    if (this.issuesSub) {
-      this.issuesSub.unsubscribe();
-      this.issuesSub = null;
-    }
-  }
+  // derived data
+  filtered = computed(() => {
+    const q = this.search().trim().toLowerCase();
+    const state = this.stateFilter();
+    const me = this.myOnly();
+    const meId = this.currentUser()?.id;
 
-  buildAssigneeOptions(): void {
-    this.assigneeOptions = [
-      { label: 'All Users', value: '' },
-      ...this.allUsers.map(user => ({
-        label: `${user.firstName} ${user.lastName}`,
-        value: user.id
-      }))
-    ];
-  }
+    return this.allIssues().filter(i => {
+      if (state !== 'all' && i.state !== state) return false;
+      if (me && meId && i.assignedTo !== meId) return false;
 
-  loadIssues(): void {
-    this.issues = this.issueService.getAllIssues() || [];
-    this.applyFiltersAndSort();
-  }
+      if (!q) return true;
 
-  applyFiltersAndSort(): void {
-    let filtered: Issue[] = [...(this.issues || [])];
-
-    const term = this.searchTerm?.trim();
-    if (term) {
-      if (this.issueService.searchIssues) {
-        try {
-          const results = this.issueService.searchIssues(term);
-          if (Array.isArray(results)) {
-            filtered = [...results];
-          } else {
-            filtered = filtered.filter(i =>
-              this.issueMatchesSearch(i, term)
-            );
-          }
-        } catch {
-          filtered = filtered.filter(i => this.issueMatchesSearch(i, term));
-        }
-      } else {
-        filtered = filtered.filter(i => this.issueMatchesSearch(i, term));
-      }
-    }
-
-    if (this.selectedState) {
-      filtered = filtered.filter(issue => issue.state === this.selectedState);
-    }
-
-    if (this.selectedAssignee) {
-      filtered = filtered.filter(issue => issue.assignedTo === this.selectedAssignee);
-    }
-
-    filtered = [...filtered]; 
-    filtered.sort((a: Issue, b: Issue) => {
-      const aRaw = (a as any)[this.sortBy];
-      const bRaw = (b as any)[this.sortBy];
-
-      if (this.isDateField(this.sortBy)) {
-        const aDate = aRaw ? new Date(aRaw).getTime() : 0;
-        const bDate = bRaw ? new Date(bRaw).getTime() : 0;
-        if (aDate < bDate) return this.sortOrder === 'asc' ? -1 : 1;
-        if (aDate > bDate) return this.sortOrder === 'asc' ? 1 : -1;
-        return 0;
-      }
-
-      if (typeof aRaw === 'number' && typeof bRaw === 'number') {
-        if (aRaw < bRaw) return this.sortOrder === 'asc' ? -1 : 1;
-        if (aRaw > bRaw) return this.sortOrder === 'asc' ? 1 : -1;
-        return 0;
-      }
-
-      const aStr = (aRaw ?? '').toString().toLowerCase();
-      const bStr = (bRaw ?? '').toString().toLowerCase();
-      if (aStr < bStr) return this.sortOrder === 'asc' ? -1 : 1;
-      if (aStr > bStr) return this.sortOrder === 'asc' ? 1 : -1;
-      return 0;
+      const assignee = this.users().find(u => u.id === i.assignedTo);
+      const assigneeName = assignee ? `${assignee.firstName} ${assignee.lastName}`.toLowerCase() : '';
+      return (
+        i.id.toLowerCase().includes(q) ||
+        i.title.toLowerCase().includes(q) ||
+        assigneeName.includes(q)
+      );
     });
+  });
 
-    this.filteredIssues = filtered;
+  colBacklog = computed(() => this.filtered().filter(i => i.state === 'new'));
+  colProgress = computed(() => this.filtered().filter(i => i.state === 'in-progress'));
+  colBlocked = computed(() => this.filtered().filter(i => i.state === 'blocked'));
+  colDone = computed(() => this.filtered().filter(i => i.state === 'completed'));
+
+  trackById(index: number, item: any): number {
+    return item.id;
   }
 
-  private issueMatchesSearch(issue: Issue, term: string): boolean {
-    const t = term.toLowerCase();
-    return (
-      (issue.title || '').toLowerCase().includes(t) ||
-      (issue.id || '').toLowerCase().includes(t) ||
-      (this.getUserName(issue.assignedTo) || '').toLowerCase().includes(t)
-    );
+  kpiTotal = computed(() => this.filtered().length);
+  kpiProgress = computed(() => this.filtered().filter(i => i.state === 'in-progress').length);
+  kpiCompleted = computed(() => this.filtered().filter(i => i.state === 'completed').length);
+  kpiBlocked = computed(() => this.filtered().filter(i => i.state === 'blocked').length);
+
+  assigneeName(id: string): string {
+    const u = this.users().find(x => x.id === id);
+    return u ? `${u.firstName} ${u.lastName}` : '—';
   }
 
-  private isDateField(field: string): boolean {
-    const dateFields = ['createdAt', 'dueDate', 'updatedAt'];
-    return dateFields.includes(field);
-  }
-
-  onSearch(): void {
-    this.applyFiltersAndSort();
-  }
-
-  onFilterChange(): void {
-    this.applyFiltersAndSort();
-  }
-
-  onSortChange(): void {
-    this.applyFiltersAndSort();
-  }
-
-  toggleSortOrder(): void {
-    this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
-    this.applyFiltersAndSort();
-  }
-
-  getIssuesByState(state: string): Issue[] {
-    return this.filteredIssues.filter(issue => issue.state === state);
-  }
-
-  getCountByState(state: string): number {
-    return this.filteredIssues.filter(issue => issue.state === state).length;
-  }
-
-  getRecentIssues(): Issue[] {
-    return [...this.filteredIssues]
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, 5);
-  }
-
-  getPendingIssues(): Issue[] {
-    return this.filteredIssues.filter(issue => 
-      issue.state === 'new' || issue.state === 'blocked'
-    );
-  }
-
-  getUserName(userId?: string | null): string {
-    if (!userId) return 'Unassigned';
-    const user = this.allUsers.find(u => u.id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : 'Unassigned';
-  }
-
-  getStateSeverity(state: string): TagSeverity {
-    switch (state) {
-      case 'new':
-        return 'info';
-      case 'in-progress':
-        return 'warning';
-      case 'completed':
-        return 'success';
-      case 'blocked':
-        return 'danger';
-      default:
-        return 'info';
+  stateSeverity(s: StateKey): 'success' | 'info' | 'warning' | 'danger' | 'secondary' {
+    switch (s) {
+      case 'new': return 'info';
+      case 'in-progress': return 'warning';
+      case 'completed': return 'success';
+      case 'blocked': return 'danger';
+      default: return 'secondary';
     }
   }
 
-  getDelay(issue: Issue): number {
-    return this.issueService.calculateDelay(issue);
-  }
-
-  isOverdue(issue: Issue): boolean {
-    return this.issueService.isOverdue(issue);
-  }
-
-  canEditIssue(issue: Issue): boolean {
-    if (!this.currentUser) return false;
-    return this.currentUser.role === 'admin' || issue.createdBy === this.currentUser.id;
-  }
-
-  canDeleteIssue(issue: Issue): boolean {
-    if (!this.currentUser) return false;
-    return this.currentUser.role === 'admin' || issue.createdBy === this.currentUser.id;
-  }
-
-  viewIssue(issue: Issue): void {
-    this.router.navigate(['issue', issue.id]);
-  }
-
-  editIssue(issue: Issue): void {
-    this.router.navigate(['issue/edit', issue.id]);
-    console.log('editing issue ....', issue.id, this.router.url)
-  }
-
-  deleteIssue(issue: Issue): void {
-    if (confirm(`Are you sure you want to delete issue ${issue.id}?`)) {
-      try {
-        this.issueService.deleteIssue(issue.id);
-        this.loadIssues();
-      } catch (error: any) {
-        alert(error?.message || 'Failed to delete issue');
-      }
-    }
-  }
-
-  createNewIssue(): void {
-    this.router.navigate(['/issue/create']);
-    console.log(this.router.navigate(['/issue/create']));
-  }
-
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/auth/login']);
-    console.log('logginggg outttt .....')
+  clearFilters() {
+    this.search.set('');
+    this.stateFilter.set('all');
+    this.myOnly.set(false);
   }
 }

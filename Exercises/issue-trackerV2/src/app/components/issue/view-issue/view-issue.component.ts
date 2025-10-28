@@ -37,7 +37,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   ]
 })
 export class ViewIssueComponent implements OnInit {
-  issueId: string = '';
+  issueId = '';
   issue: Issue | null = null;
   allUsers: User[] = [];
   currentUser: User | null = null;
@@ -55,7 +55,7 @@ export class ViewIssueComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = this.userService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/auth/login']);
       return;
     }
 
@@ -91,31 +91,21 @@ export class ViewIssueComponent implements OnInit {
 
   getStateClass(state: string): string {
     switch (state) {
-      case 'new':
-        return 'bg-blue-400/20 text-blue-300 border-blue-400/30';
-      case 'in-progress':
-        return 'bg-yellow-400/20 text-yellow-300 border-yellow-400/30';
-      case 'completed':
-        return 'bg-green-400/20 text-green-300 border-green-400/30';
-      case 'blocked':
-        return 'bg-red-400/20 text-red-300 border-red-400/30';
-      default:
-        return 'bg-gray-400/20 text-gray-300 border-gray-400/30';
+      case 'new':         return 'bg-blue-400/20 text-blue-300 border-blue-400/30';
+      case 'in-progress': return 'bg-yellow-400/20 text-yellow-300 border-yellow-400/30';
+      case 'completed':   return 'bg-green-400/20 text-green-300 border-green-400/30';
+      case 'blocked':     return 'bg-red-400/20 text-red-300 border-red-400/30';
+      default:            return 'bg-gray-400/20 text-gray-300 border-gray-400/30';
     }
   }
 
   getStateIcon(state: string): string {
     switch (state) {
-      case 'new':
-        return 'pi-circle';
-      case 'in-progress':
-        return 'pi-spinner';
-      case 'completed':
-        return 'pi-check-circle';
-      case 'blocked':
-        return 'pi-lock';
-      default:
-        return 'pi-circle';
+      case 'new':         return 'pi-circle';
+      case 'in-progress': return 'pi-spinner';
+      case 'completed':   return 'pi-check-circle';
+      case 'blocked':     return 'pi-lock';
+      default:            return 'pi-circle';
     }
   }
 
@@ -140,7 +130,7 @@ export class ViewIssueComponent implements OnInit {
   }
 
   editIssue(): void {
-    this.router.navigate(['/issue/edit', this.issueId]);
+    this.router.navigate(['/dashboard', 'issue', 'edit', this.issueId]);
   }
 
   deleteIssue(): void {
@@ -160,31 +150,21 @@ export class ViewIssueComponent implements OnInit {
 
   getActivityActionText(action: string): string {
     switch (action) {
-      case 'created':
-        return 'Created issue';
-      case 'updated':
-        return 'Updated issue';
-      case 'state_changed':
-        return 'Changed state';
-      case 'deleted':
-        return 'Deleted issue';
-      default:
-        return action;
+      case 'created':       return 'Created issue';
+      case 'updated':       return 'Updated issue';
+      case 'state_changed': return 'Changed state';
+      case 'deleted':       return 'Deleted issue';
+      default:              return action;
     }
   }
 
   getActivityIcon(action: string): string {
     switch (action) {
-      case 'created':
-        return 'pi-plus-circle';
-      case 'updated':
-        return 'pi-pencil';
-      case 'state_changed':
-        return 'pi-arrow-right';
-      case 'deleted':
-        return 'pi-trash';
-      default:
-        return 'pi-clock';
+      case 'created':       return 'pi-plus-circle';
+      case 'updated':       return 'pi-pencil';
+      case 'state_changed': return 'pi-arrow-right';
+      case 'deleted':       return 'pi-trash';
+      default:              return 'pi-clock';
     }
   }
 }

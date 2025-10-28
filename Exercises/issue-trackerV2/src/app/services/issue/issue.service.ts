@@ -3,65 +3,95 @@ import { BehaviorSubject } from 'rxjs';
 import { Issue, ActivityLog, Change } from '../../models/issue';
 import { UserService } from '../user/user.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+const ISSUES_KEY = 'issues';
+const LOGS_KEY = 'activityLogs';
+
+function reviveIssue(raw: any): Issue {
+  return {
+    ...raw,
+    createdAt: raw?.createdAt ? new Date(raw.createdAt) : new Date(),
+    updatedAt: raw?.updatedAt ? new Date(raw.updatedAt) : new Date(),
+    dueDate: raw?.dueDate ? new Date(raw.dueDate) : new Date()
+  } as Issue;
+}
+
+function reviveLog(raw: any): ActivityLog {
+  return {
+    ...raw,
+    timestamp: raw?.timestamp ? new Date(raw.timestamp) : new Date()
+  } as ActivityLog;
+}
+
+@Injectable({ providedIn: 'root' })
 export class IssueService {
   private issues: Issue[] = [];
   private activityLogs: ActivityLog[] = [];
 
-  
   private issuesSubject = new BehaviorSubject<Issue[]>([]);
   issues$ = this.issuesSubject.asObservable();
 
   constructor(private userService: UserService) {
     this.loadIssues();
+    this.loadActivityLogs(); 
   }
 
   private loadIssues() {
-    const stored = localStorage.getItem('issues');
+    const stored = localStorage.getItem(ISSUES_KEY);
     if (stored) {
-      this.issues = JSON.parse(stored);
+      try {
+        const arr = JSON.parse(stored);
+        this.issues = Array.isArray(arr) ? arr.map(reviveIssue) : [];
+      } catch {
+        this.issues = [];
+        localStorage.removeItem(ISSUES_KEY);
+      }
     } else {
       this.issues = [];
-      localStorage.setItem('issues', JSON.stringify(this.issues));
+      localStorage.setItem(ISSUES_KEY, JSON.stringify(this.issues));
     }
-    this.issuesSubject.next(this.issues);
+    this.issuesSubject.next([...this.issues]);
   }
 
   private loadActivityLogs() {
-    const stored = localStorage.getItem('activityLogs');
+    const stored = localStorage.getItem(LOGS_KEY);
     if (stored) {
-      this.activityLogs = JSON.parse(stored);
+      try {
+        const arr = JSON.parse(stored);
+        this.activityLogs = Array.isArray(arr) ? arr.map(reviveLog) : [];
+      } catch {
+        this.activityLogs = [];
+        localStorage.removeItem(LOGS_KEY);
+      }
     } else {
       this.activityLogs = [];
-      localStorage.setItem('activityLogs', JSON.stringify(this.activityLogs));
+      localStorage.setItem(LOGS_KEY, JSON.stringify(this.activityLogs));
     }
   }
 
-
   private saveIssues() {
-    localStorage.setItem('issues', JSON.stringify(this.issues));
-    this.issuesSubject.next(this.issues);
+    localStorage.setItem(ISSUES_KEY, JSON.stringify(this.issues));
+    this.issuesSubject.next([...this.issues]);
   }
 
   private saveActivityLogs() {
-    localStorage.setItem('activityLogs', JSON.stringify(this.activityLogs));
+    localStorage.setItem(LOGS_KEY, JSON.stringify(this.activityLogs));
   }
 
-
   private generateIssueId(): string {
+
     const maxId = this.issues.reduce((max, issue) => {
-      const num = parseInt(issue.id.split('-')[1]);
-      return num > max ? num : max;
+      const parts = String(issue.id || '').split('-');
+      const num = parseInt(parts[1], 10);
+      return Number.isFinite(num) && num > max ? num : max;
     }, 0);
     return `ISS-${String(maxId + 1).padStart(3, '0')}`;
   }
 
   private generateLogId(): string {
     const maxId = this.activityLogs.reduce((max, log) => {
-      const num = parseInt(log.id.split('-')[1]);
-      return num > max ? num : max;
+      const parts = String(log.id || '').split('-');
+      const num = parseInt(parts[1], 10);
+      return Number.isFinite(num) && num > max ? num : max;
     }, 0);
     return `LOG-${String(maxId + 1).padStart(3, '0')}`;
   }
@@ -88,12 +118,9 @@ export class IssueService {
     this.saveActivityLogs();
   }
 
-
   createIssue(issueData: Omit<Issue, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'state'>): Issue {
     const currentUser = this.userService.getCurrentUser();
-    if (!currentUser) {
-      throw new Error('User must be logged in to create an issue');
-    }
+    if (!currentUser) throw new Error('User must be logged in to create an issue');
 
     const newIssue: Issue = {
       ...issueData,
@@ -117,9 +144,8 @@ export class IssueService {
     return newIssue;
   }
 
-
   getAllIssues(): Issue[] {
-    return this.issues;
+    return [...this.issues];
   }
 
   getIssueById(id: string): Issue | undefined {
@@ -136,17 +162,13 @@ export class IssueService {
 
   updateIssue(id: string, updates: Partial<Issue>): Issue {
     const currentUser = this.userService.getCurrentUser();
-    if (!currentUser) {
-      throw new Error('User must be logged in to update an issue');
-    }
+    if (!currentUser) throw new Error('User must be logged in to update an issue');
 
     const index = this.issues.findIndex(issue => issue.id === id);
-    if (index === -1) {
-      throw new Error('Issue not found');
-    }
+    if (index === -1) throw new Error('Issue not found');
 
     const oldIssue = this.issues[index];
-    
+
     if (currentUser.role !== 'admin' && oldIssue.createdBy !== currentUser.id) {
       throw new Error('You do not have permission to update this issue');
     }
@@ -154,17 +176,22 @@ export class IssueService {
     const changes: Change[] = [];
     Object.keys(updates).forEach(key => {
       const oldValue = (oldIssue as any)[key];
-      const newValue = (updates as any)[key];
+      let newValue = (updates as any)[key];
+      
+      if (key === 'dueDate' || key === 'createdAt' || key === 'updatedAt') {
+        newValue = newValue ? new Date(newValue) : newValue;
+      }
+
       if (oldValue !== newValue) {
         changes.push({ field: key, oldValue, newValue });
       }
     });
 
-    const updatedIssue = {
+    const updatedIssue: Issue = reviveIssue({
       ...oldIssue,
       ...updates,
       updatedAt: new Date()
-    };
+    });
 
     this.issues[index] = updatedIssue;
     this.saveIssues();
@@ -179,14 +206,10 @@ export class IssueService {
 
   deleteIssue(id: string): void {
     const currentUser = this.userService.getCurrentUser();
-    if (!currentUser) {
-      throw new Error('User must be logged in to delete an issue');
-    }
+    if (!currentUser) throw new Error('User must be logged in to delete an issue');
 
     const issue = this.issues.find(i => i.id === id);
-    if (!issue) {
-      throw new Error('Issue not found');
-    }
+    if (!issue) throw new Error('Issue not found');
 
     if (currentUser.role !== 'admin' && issue.createdBy !== currentUser.id) {
       throw new Error('You do not have permission to delete this issue');
@@ -199,9 +222,7 @@ export class IssueService {
 
   assignIssue(issueId: string, userId: string): Issue {
     const currentUser = this.userService.getCurrentUser();
-    if (!currentUser) {
-      throw new Error('User must be logged in');
-    }
+    if (!currentUser) throw new Error('User must be logged in');
 
     if (currentUser.role !== 'admin' && userId !== currentUser.id) {
       throw new Error('Only admins can assign issues to other users');
@@ -213,16 +234,14 @@ export class IssueService {
   getActivityLogs(issueId: string): ActivityLog[] {
     return this.activityLogs
       .filter(log => log.issueId === issueId)
-      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
-
 
   searchIssues(searchTerm: string): Issue[] {
     const term = searchTerm.toLowerCase();
     return this.issues.filter(issue => {
       const assignedUser = this.userService.getAllUsers().find(u => u.id === issue.assignedTo);
       const assignedName = assignedUser ? `${assignedUser.firstName} ${assignedUser.lastName}`.toLowerCase() : '';
-      
       return (
         issue.title.toLowerCase().includes(term) ||
         issue.id.toLowerCase().includes(term) ||
@@ -237,6 +256,6 @@ export class IssueService {
 
   isOverdue(issue: Issue): boolean {
     if (issue.state === 'completed') return false;
-    return new Date(issue.dueDate) < new Date();
+    return issue.dueDate.getTime() < Date.now();
   }
 }

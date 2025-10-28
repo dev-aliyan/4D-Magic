@@ -1,224 +1,273 @@
-<div 
-  class="backdrop-blur-xl bg-white/5 border-b border-white/20 shadow-lg rounded-xl"
->
-  <!-- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex justify-between items-center">
 
-     <div class="flex gap-4 items-center">
-      <div class="text-right ">
-        <p class="text-sm font-medium text-white">
-          {{ currentUser?.firstName }} {{ currentUser?.lastName }}
-        </p>
-        <p-tag 
-          rounded="true"
-          [value]="(currentUser?.role | titlecase) || ''"
-          [severity]="currentUser?.role === 'admin' ? 'danger' : 'info'">
-        </p-tag>
-      </div>
-
-      <button
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-white text-2xl font-semibold">Issue Tracker — Simplified Dashboard</h2>
+      <a
         pButton
-        type="button"
-        label="Logout"
-        icon="pi pi-sign-out"
-        class="py-2 px-4  bg-gradient-to-r from-pink-600 via-purple-700 to-blue-800 text-white rounded-lg shadow-lg hover:opacity-90 transition"
-        (click)="logout()"
-      ></button>
-    </div> 
-  </div> -->
-
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-   <!-- <div class="flex justify-end mb-6">
-      <button
-        pButton
-        type="button"
-        label="Create New Issue"
-        icon="pi pi-plus"
-        class="py-2 px-3 bg-gradient-to-r from-pink-600 via-purple-700 to-blue-800 text-white rounded-lg shadow-lg hover:opacity-90 transition"
-        (click)="createNewIssue()"
-      ></button>
-    </div>  -->
-
-    <div
-      class="backdrop-blur-lg bg-white/5 border border-white/20 rounded-2xl shadow-lg p-6 mb-10"
-    >
-      <h2 class="text-lg font-semibold text-white mb-4">Search & Filter</h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div class="lg:col-span-2">
-          <label class="block text-sm font-medium text-gray-300 mb-2"
-            >Search Issues</label
-          >
-          <span class="p-input-icon-left w-full">
-            <i class="pi pi-search text-gray-400"></i>
+        label="New Issue"
+        class=" rounded-xl p-button-info text-white px-3 py-2"
+        [routerLink]="['/dashboard','issue','create']"
+      ></a>
+    </div>
+    <p-card styleClass="surface-card border-none">
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <span class="relative flex-grow">
             <input
-              pInputText
+              pInputTextarea
               type="text"
-              [(ngModel)]="searchTerm"
-              (keyup)="onSearch()"
-              placeholder="Search by title, ID, or assignee..."
-              class="w-full p-3.5 bg-white/5 rounded-xl border border-white/30 text-white placeholder-gray-400 focus:border-[#821D3F] focus:ring-1 focus:ring-[#821D3F]"
+              placeholder="Search by title, ID, or assignee…"
+              [ngModel]="search()"
+              (ngModelChange)="search.set($event)"
+              class="w-full p-2"
             />
+            <i class="pi pi-search absolute right-4 top-3"></i>
           </span>
+
+          <p-button
+            icon="pi pi-filter-slash"
+            class="p-button-text text-white border border-white rounded-md py-2"
+            (click)="clearFilters()"
+          ></p-button>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">State</label>
-          <p-dropdown
-            [(ngModel)]="selectedState"
-            [options]="stateOptions"
-            optionLabel="label"
-            optionValue="value"
-            (onChange)="onFilterChange()"
-            styleClass="theme-dropdown w-full"
-          ></p-dropdown>
-        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <p-chip
+            [label]="'All states'"
+            [removable]="false"
+            [class.active-chip]="stateFilter()==='all'"
+            (click)="stateFilter.set('all')"
+          ></p-chip>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2"
-            >Assigned To</label
-          >
-          <p-dropdown
-            [(ngModel)]="selectedAssignee"
-            [options]="assigneeOptions"
-            optionLabel="label"
-            optionValue="value"
-            (onChange)="onFilterChange()"
-            placeholder="All Users"
-          ></p-dropdown>
-        </div>
+          <p-chip
+            label="New"
+            [class.active-chip]="stateFilter()==='new'"
+            (click)="stateFilter.set('new')"
+          ></p-chip>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2"
-            >Sort By</label
-          >
-          <div class="flex gap-2">
-            <p-dropdown
-              [(ngModel)]="sortBy"
-              [options]="sortOptions"
-              optionLabel="label"
-              optionValue="value"
-              (onChange)="onSortChange()"
-              styleClass="theme-dropdown w-full flex-1"
-              [panelStyleClass]="'theme-dropdown-panel'"
-            ></p-dropdown>
-            <button
-              pButton
-              type="button"
-              [icon]="sortOrder === 'asc' ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"
-              class="theme-btn-glass !p-2"
-              (click)="toggleSortOrder()"
-              pTooltip="Toggle sort order"
-              tooltipPosition="top"
-            ></button>
+          <p-chip
+            label="In progress"
+            [class.active-chip]="stateFilter()==='in-progress'"
+            (click)="stateFilter.set('in-progress')"
+          ></p-chip>
+
+          <p-chip
+            label="Completed"
+            [class.active-chip]="stateFilter()==='completed'"
+            (click)="stateFilter.set('completed')"
+          ></p-chip>
+
+          <p-chip
+            label="Blocked"
+            [class.active-chip]="stateFilter()==='blocked'"
+            (click)="stateFilter.set('blocked')"
+          ></p-chip>
+
+          <p-chip
+            [label]="myOnly() ? 'My open: On' : 'My open: Off'"
+            (click)="myOnly.set(!myOnly())"
+          ></p-chip>
+
+          <div class="ml-auto text-sm text-gray-300 hidden md:flex gap-6">
+            <span>Unified search + quick chips</span>
+            <span>Kanban default</span>
+            <span>Table for dense ops</span>
           </div>
         </div>
-      </div>
 
-      <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-white/10 pt-6">
-        <div class="text-center">
-          <p class="text-2xl font-bold text-[#3A3B92]">{{ filteredIssues.length }}</p>
-          <p class="text-sm text-gray-300">Total Issues</p>
-        </div>
-        <div class="text-center">
-          <p class="text-2xl font-bold text-yellow-400">{{ getCountByState('in-progress') }}</p>
-          <p class="text-sm text-gray-300">In Progress</p>
-        </div>
-        <div class="text-center">
-          <p class="text-2xl font-bold text-green-400">{{ getCountByState('completed') }}</p>
-          <p class="text-sm text-gray-300">Completed</p>
-        </div>
-        <div class="text-center">
-          <p class="text-2xl font-bold text-red-400">{{ getCountByState('blocked') }}</p>
-          <p class="text-sm text-gray-300">Blocked</p>
+        <!-- KPIs -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <p-card styleClass="kpi card-item">
+            <div class="kpi-title">Total</div>
+            <div class="kpi-value">{{ kpiTotal() }}</div>
+          </p-card>
+          <p-card styleClass="kpi card-item">
+            <div class="kpi-title">In Progress</div>
+            <div class="kpi-value">{{ kpiProgress() }}</div>
+          </p-card>
+          <p-card styleClass="kpi card-item">
+            <div class="kpi-title">Completed</div>
+            <div class="kpi-value">{{ kpiCompleted() }}</div>
+          </p-card>
+          <p-card styleClass="kpi card-item">
+            <div class="kpi-title">Blocked</div>
+            <div class="kpi-value">{{ kpiBlocked() }}</div>
+          </p-card>
         </div>
       </div>
-    </div>
+    </p-card>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-      <div class="glass-card">
-        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-          <i class="pi pi-clock text-[#3A3B92]"></i> Recent Issues
-        </h3>
-        <div class="space-y-3 max-h-96 overflow-y-auto">
-          <ng-container *ngIf="getRecentIssues().length > 0; else noRecent">
-            <div
-              *ngFor="let issue of getRecentIssues()"
-              class="glass-item hover:bg-white/20 cursor-pointer"
-              (click)="viewIssue(issue)"
-            >
-              <p class="font-medium text-sm">{{ issue.id }}</p>
-              <p class="text-xs text-gray-300 truncate">{{ issue.title }}</p>
-              <p class="text-xs text-gray-400 mt-1">
-                {{ issue.createdAt | date: 'short' }}
-              </p>
+    <!-- Kanban + Table tabs -->
+    <p-tabView class="mt-4">
+      <p-tabPanel header="Kanban">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <!-- Backlog -->
+          <p-card styleClass="kanban-col">
+            <div class="col-title">Backlog</div>
+            <div class="space-y-3">
+              <ng-container *ngFor="let i of colBacklog(); trackBy: trackById">
+                <div class="card-item flex justify-between">
+                  <div class="flex flex-col">
+                    <div class="id">{{ i.id }}</div>
+                    <div class="title text-sm">{{ i.title }}</div>
+                  </div>
+                  <div class="flex flex-col items-end gap-5">
+                    <p-tag [severity]="stateSeverity(i.state)" [value]="i.state | titlecase"></p-tag>
+                    <div class="actions">
+                      <a
+                        pButton
+                        icon="pi pi-eye"
+                        class="p-button-text text-white flex rounded-full"
+                        style="font-size: 0.9rem;"
+                        [routerLink]="['/dashboard','issue', i.id]"
+                      ></a>
+                      <a
+                        pButton
+                        icon="pi pi-pencil"
+                        class="p-button-text text-white flex rounded-full w-5 h-5"
+                        style="font-size: 0.9rem;"
+                        [routerLink]="['/dashboard','issue','edit', i.id]"
+                      ></a>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
             </div>
-          </ng-container>
-          <ng-template #noRecent>
-            <p class="text-gray-400 text-sm text-center py-4">No recent issues</p>
-          </ng-template>
-        </div>
-      </div>
+          </p-card>
 
-      <div class="glass-card">
-        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-          <i class="pi pi-spinner text-yellow-400"></i> In Progress
-        </h3>
-        <div class="space-y-3 max-h-96 overflow-y-auto">
-          <ng-container *ngIf="getIssuesByState('in-progress').length > 0; else noProgress">
-            <div
-              *ngFor="let issue of getIssuesByState('in-progress')"
-              class="glass-item border-l-4 border-yellow-400"
-              (click)="viewIssue(issue)"
-            >
-              <p class="font-medium text-sm">{{ issue.id }}</p>
-              <p class="text-xs text-gray-300 truncate">{{ issue.title }}</p>
-              <p class="text-xs text-gray-400 mt-1">
-                Assigned: {{ getUserName(issue.assignedTo) }}
-              </p>
+          <!-- In Progress -->
+          <p-card styleClass="kanban-col">
+            <div class="col-title">In Progress</div>
+            <div class="space-y-3">
+              <ng-container *ngFor="let i of colProgress(); trackBy: trackById">
+                <div class="card-item">
+                  <div class="id">{{ i.id }}</div>
+                  <div class="title">{{ i.title }}</div>
+                  <p-tag
+                    [severity]="stateSeverity(i.state)"
+                    [value]="i.state | titlecase"
+                  ></p-tag>
+                  <div class="actions">
+                    <button
+                      icon="pi pi-eye"
+                      severity="info"
+                      [routerLink]="['/dashboard', 'issue', i.id]"
+                    ></button>
+                    <a
+                      pButton
+                      icon="pi pi-pencil"
+                      class="p-button-text"
+                      [routerLink]="['/dashboard', 'issue', 'edit', i.id]"
+                    ></a>
+                  </div>
+                </div>
+              </ng-container>
             </div>
-          </ng-container>
-          <ng-template #noProgress>
-            <p class="text-gray-400 text-sm text-center py-4">No issues in progress</p>
-          </ng-template>
-        </div>
-      </div>
-
-      <div class="glass-card">
-        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-          <i class="pi pi-exclamation-circle text-red-400"></i> Pending
-        </h3>
-        <div class="space-y-3 max-h-96 overflow-y-auto">
-          <ng-container *ngIf="getPendingIssues().length > 0; else noPending">
-            <div
-              *ngFor="let issue of getPendingIssues()"
-              class=" border-red-400"
-              (click)="viewIssue(issue)"
-            >
-              <p class="font-medium text-sm">{{ issue.id }}</p>
-              <p class="text-xs text-gray-300 truncate">{{ issue.title }}</p>
-              <p-tag
-                [value]="issue.state | titlecase"
-                [severity]="issue.state === 'blocked' ? 'danger' : 'warning'"
-                class="mt-2 text-xs"
-              ></p-tag>
+          </p-card>
+          <!-- Blocked -->
+          <p-card styleClass="kanban-col">
+            <div class="col-title">Blocked</div>
+            <div class="space-y-3">
+              <ng-container *ngFor="let i of colBlocked(); trackBy: trackById">
+                <div class="card-item">
+                  <div class="id">{{ i.id }}</div>
+                  <div class="title">{{ i.title }}</div>
+                  <p-tag
+                    [severity]="stateSeverity(i.state)"
+                    [value]="i.state | titlecase"
+                  ></p-tag>
+                  <div class="actions">
+                    <a
+                      pButton
+                      icon="pi pi-eye"
+                      class="p-button-text"
+                      [routerLink]="['/dashboard', 'issue', i.id]"
+                    ></a>
+                    <a
+                      pButton
+                      icon="pi pi-pencil"
+                      class="p-button-text"
+                      [routerLink]="['/dashboard', 'issue', 'edit', i.id]"
+                    ></a>
+                  </div>
+                </div>
+              </ng-container>
             </div>
-          </ng-container>
-          <ng-template #noPending>
-            <p class="text-gray-400 text-sm text-center py-4">No pending issues</p>
-          </ng-template>
+          </p-card>
+
+          <!-- Done -->
+          <p-card styleClass="kanban-col">
+            <div class="col-title">Done</div>
+            <div class="space-y-3">
+              <ng-container *ngFor="let i of colDone(); trackBy: trackById">
+                <div class="card-item">
+                  <div class="id">{{ i.id }}</div>
+                  <div class="title">{{ i.title }}</div>
+                  <p-tag
+                    [severity]="stateSeverity(i.state)"
+                    [value]="i.state | titlecase"
+                  ></p-tag>
+                  <div class="actions">
+                    <a
+                      pButton
+                      icon="pi pi-eye"
+                      class="p-button-text"
+                      [routerLink]="['/dashboard', 'issue', i.id]"
+                    ></a>
+                    <a
+                      pButton
+                      icon="pi pi-pencil"
+                      class="p-button-text"
+                      [routerLink]="['/dashboard', 'issue', 'edit', i.id]"
+                    ></a>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </p-card>
+
         </div>
-      </div>
-    </div>
+      </p-tabPanel>
 
-    <div class="backdrop-blur-lg bg-white/5 border border-white/20 rounded-2xl shadow-lg overflow-hidden">
-      <div class="p-6 border-b border-white/10">
-        <h2 class="text-lg font-semibold text-white">All Issues</h2>
-      </div>
+      <p-tabPanel header="Table">
+        <p-card styleClass="surface-card border-none">
+          <p-table
+            [value]="filtered()"
+            [paginator]="true"
+            [rows]="10"
+            responsiveLayout="scroll"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width: 110px">ID</th>
+                <th>Title</th>
+                <th style="width: 160px">State</th>
+                <th style="width: 220px">Assignee</th>
+                <th style="width: 120px">Est.</th>
+                <th style="width: 140px">Due</th>
+                <th style="width: 120px"></th>
+              </tr>
+            </ng-template>
 
-      <div class="overflow-x-auto">
-        <app-all-issues></app-all-issues>
-      </div>
-    </div>
-  </div>
-</div>
-
+            <ng-template pTemplate="body" let-i>
+              <tr>
+                <td>{{ i.id }}</td>
+                <td>{{ i.title }}</td>
+                <td>
+                  <p-tag [severity]="stateSeverity(i.state)" [value]="i.state | titlecase"></p-tag>
+                </td>
+                <td>{{ assigneeName(i.assignedTo) }}</td>
+                <td>{{ i.estimatedTime }}h</td>
+                <td>{{ i.dueDate | date: 'MM/dd/yy' }}</td>
+                <td class="text-right">
+                  <a pButton icon="pi pi-eye" class="p-button-text mr-1"
+                     [routerLink]="['/dashboard','issue', i.id]"></a>
+                  <a pButton icon="pi pi-pencil" class="p-button-text"
+                     [routerLink]="['/dashboard','issue','edit', i.id]"></a>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-card>
+      </p-tabPanel>
+    </p-tabView>

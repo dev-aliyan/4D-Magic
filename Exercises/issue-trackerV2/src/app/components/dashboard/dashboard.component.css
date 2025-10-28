@@ -1,0 +1,41 @@
+
+
+/* KPI cards */
+.kpi { background: rgba(255,255,255,0.03); }
+.kpi .kpi-title { color: #c9c9d3; font-size: 0.8rem; }
+.kpi .kpi-value { color: #fff; font-size: 1.8rem; font-weight: 700; }
+
+/* Active filter chip look */
+:host ::ng-deep .active-chip {
+  background: linear-gradient(90deg, #d946ef, #6d28d9, #1e40af);
+  color: white;
+}
+
+/* Kanban column */
+.kanban-col { 
+  background: rgba(0, 0, 0, 0); 
+  /* border: 1px solid rgba(255,255,255,0.06);  */
+}
+.col-title { color: #e8e8f4; font-weight: 600; margin-bottom: .75rem; }
+
+/* Kanban item card */
+.card-item {
+  padding: .9rem;
+  border-radius: .75rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.card-item .id { color: #bfc6ff; font-weight: 600; font-size: .9rem; }
+.card-item .title { color: #eaeaf3; font-size: .9rem; margin: .25rem 0 .5rem; }
+.card-item .actions { display: flex; gap: .25rem; margin-top: .5rem; }
+
+:host ::ng-deep .p-card {
+  background: rgba(255,255,255,0.035) !important;
+  box-shadow: none !important;
+
+}
+:host ::ng-deep .p-tabview .p-tabview-panels {
+  background: transparent;
+  border: none;
+}
+

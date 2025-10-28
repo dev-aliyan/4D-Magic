@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { User } from '../../../models/user';
-import { NgZone } from '@angular/core';
-import { UserService } from '../../../services/user/user.service';
-import { IssueService } from '../../../services/issue/issue.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { User } from '../../../models/user';
+import { UserService } from '../../../services/user/user.service';
+import { IssueService } from '../../../services/issue/issue.service';
+
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
@@ -13,11 +13,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
-import { MessagesModule } from 'primeng/messages';
 import { ToastModule } from 'primeng/toast';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-
-
 
 @Component({
   selector: 'app-create-issue',
@@ -33,10 +29,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     InputNumberModule,
     ButtonModule,
     MessageModule,
-    MessagesModule,
     ToastModule,
-    ProgressSpinnerModule
-  ]
+  ],
 })
 export class CreateIssueComponent implements OnInit {
   title = '';
@@ -50,7 +44,7 @@ export class CreateIssueComponent implements OnInit {
   loading = false;
   error = '';
   success = false;
-  userOptions: any[] = [];
+  userOptions: { label: string; value: string }[] = [];
 
   constructor(
     private issueService: IssueService,
@@ -60,90 +54,78 @@ export class CreateIssueComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // rely on AuthGuard for access; just hydrate local data
     this.currentUser = this.userService.getCurrentUser();
     if (!this.currentUser) {
-      this.router.navigate(['/login']);
-      console.log('login from create issue')
+      // ✅ correct auth path
+      this.router.navigate(['/auth/login']);
       return;
     }
 
     this.allUsers = this.userService.getAllUsers();
-    this.buildUserOptions();
-    this.assignedTo = this.currentUser.id;
-  }
-
-  buildUserOptions(): void {
-    this.userOptions = this.allUsers.map(user => ({
+    this.userOptions = this.allUsers.map((user) => ({
       label: `${user.firstName} ${user.lastName}`,
-      value: user.id
+      value: user.id,
     }));
-  }
 
-  onDateSelect(date: Date) {
-    this.dueDate = new Date(date);
-    console.log('📅 Selected Due Date:', this.dueDate);
+    // Default assignee = self (unless admin chooses)
+    this.assignedTo = this.currentUser.id;
   }
 
   getMinDueDate(): Date {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
     return tomorrow;
   }
 
-  onSubmit(): void {
+  onSubmit(event?: Event): void {
+    event?.preventDefault();
     this.error = '';
     this.success = false;
 
-    if (!this.title.trim() || this.title.trim().length < 5) {
-      this.error = 'Issue title must be at least 5 characters long.';
+    if (!this.title.trim() || this.title.length < 5) {
+      this.error = 'Title must be at least 5 characters.';
       return;
     }
-    if (!this.description.trim() || this.description.trim().length < 10) {
-      this.error = 'Issue description must be at least 10 characters long.';
+    if (!this.description.trim() || this.description.length < 10) {
+      this.error = 'Description must be at least 10 characters.';
       return;
     }
     if (!this.estimatedTime || this.estimatedTime <= 0) {
-      this.error = 'Estimated time must be greater than 0 hours.';
+      this.error = 'Estimated time must be greater than 0.';
       return;
     }
-    if (!this.dueDate) {
-      this.error = 'Due date is required.';
+    if (!this.dueDate || new Date(this.dueDate) <= new Date()) {
+      this.error = 'Select a valid future due date.';
       return;
     }
-    if (new Date(this.dueDate) <= new Date()) {
-      this.error = 'Due date must be in the future.';
-      return;
-    }
-    if (!this.assignedTo) {
-      this.error = 'Please assign this issue to a user.';
+    if (this.currentUser?.role === 'admin' && !this.assignedTo) {
+      this.error = 'Please select an assignee.';
       return;
     }
 
     this.loading = true;
-
     try {
-      const newIssue = this.issueService.createIssue({
+      const issue = this.issueService.createIssue({
         title: this.title.trim(),
         description: this.description.trim(),
         estimatedTime: this.estimatedTime,
         completedTime: 0,
         dueDate: this.dueDate,
-        assignedTo: this.assignedTo
+        assignedTo: this.assignedTo,
       });
 
       this.success = true;
       this.resetForm();
 
+      // ✅ route to the *dashboard* child, not root
       setTimeout(() => {
-        this.zone.run(() => {
-          this.router.navigate(['/issue', newIssue.id]);
-        });
-      }, 0);
-
-
+        this.zone.run(() =>
+          this.router.navigate(['/dashboard', 'issue', issue.id])
+        );
+      }, 800);
     } catch (err: any) {
-      this.error = err.message || 'Failed to create issue. Please try again.';
+      this.error = err?.message || 'Failed to create issue. Please try again.';
     } finally {
       this.loading = false;
     }
@@ -159,11 +141,5 @@ export class CreateIssueComponent implements OnInit {
 
   onCancel(): void {
     this.router.navigate(['/dashboard']);
-    console.log('canceled')
-  }
-
-  getUserName(userId: string): string {
-    const user = this.allUsers.find(u => u.id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : 'Unknown';
   }
 }
