@@ -1,4 +1,3 @@
-/* Page background to match your gradient shell */
 .page-bg {
   min-height: calc(100vh - 6rem);
   background: linear-gradient(135deg, #030A26, #370F2F 55%, #821D3F);
@@ -6,7 +5,6 @@
   border: 1px solid rgba(255,255,255,0.06);
 }
 
-/* KPI cards */
 .kpi { background: rgba(255,255,255,0.03); }
 .kpi .kpi-title { color: #c9c9d3; font-size: 0.8rem; }
 .kpi .kpi-value { color: #fff; font-size: 1.8rem; font-weight: 700; }
@@ -19,21 +17,17 @@
   cursor: pointer;
 }
 
-/* Active filter chip look */
 :host ::ng-deep .active-chip {
   background: linear-gradient(90deg, #d946ef, #6d28d9, #1e40af);
   color: white;
   border-radius: 15px;
 }
 
-/* Kanban column */
 .kanban-col { 
   background: rgba(0, 0, 0, 0); 
-  /* border: 1px solid rgba(255,255,255,0.06);  */
 }
 .col-title { color: #e8e8f4; font-weight: 600; margin-bottom: .75rem; }
 
-/* Kanban item card */
 .card-item {
   padding: .9rem;
   border-radius: .75rem;
@@ -92,4 +86,95 @@
 ::ng-deep .p-tag {
   padding: 2px 6px !important;
   border-radius: 15px;
+}
+
+:host ::ng-deep .p-datatable {
+  background: rgba(17, 24, 39, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+/* Header */
+:host ::ng-deep .p-datatable-thead > tr > th {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  text-transform: capitalize;
+}
+
+:host ::ng-deep .p-datatable-thead > tr > th:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #a78bfa;
+}
+
+/* Table Rows */
+:host ::ng-deep .p-datatable-tbody > tr {
+  background: rgba(17, 24, 39, 0.3);
+  color: #f1f5f9;
+  transition: all 0.25s ease;
+}
+
+:host ::ng-deep .p-datatable-tbody > tr:hover {
+  background: rgba(124, 58, 237, 0.15);
+  box-shadow: 0 0 8px rgba(124, 58, 237, 0.4);
+}
+
+:host ::ng-deep .p-datatable-tbody > tr > td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* Striped rows */
+:host ::ng-deep .p-datatable-tbody > tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Paginator */
+:host ::ng-deep .p-paginator {
+  background: rgba(17, 24, 39, 0.4);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  color: #e2e8f0;
+  padding: 0.8rem;
+  border-radius: 0 0 12px 12px;
+}
+
+:host ::ng-deep .p-paginator .p-paginator-page {
+  background: transparent;
+  color: #cbd5e1;
+  border: none;
+  transition: all 0.25s ease;
+}
+
+:host ::ng-deep .p-paginator .p-paginator-page:hover {
+  color: #a78bfa;
+  text-shadow: 0 0 8px rgba(124, 58, 237, 0.4);
+}
+
+:host ::ng-deep .p-paginator .p-highlight {
+  background: rgba(99, 102, 241, 0.3);
+  color: #fff !important;
+  border-radius: 8px;
+}
+
+/* Scrollbars (if applicable) */
+:host ::ng-deep .p-datatable-wrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+:host ::ng-deep .p-datatable-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+:host ::ng-deep .p-datatable-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 58, 237, 0.4);
 }

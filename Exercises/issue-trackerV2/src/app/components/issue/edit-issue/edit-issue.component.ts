@@ -22,6 +22,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 @Component({
   selector: 'app-edit-issue',
   templateUrl: './edit-issue.component.html',
+  styleUrls: ['./edit-issue.component.css'],
   standalone: true,
   imports: [
     CommonModule, FormsModule,

@@ -18,6 +18,7 @@ import { ToastModule } from 'primeng/toast';
 @Component({
   selector: 'app-create-issue',
   templateUrl: './create-issue.component.html',
+  styleUrls: ['./create-issue.component.scss'],
   standalone: true,
   imports: [
     CommonModule,

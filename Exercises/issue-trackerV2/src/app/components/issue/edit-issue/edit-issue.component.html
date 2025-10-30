@@ -4,7 +4,7 @@
       <button class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition" (click)="onCancel()">
         <i class="pi pi-arrow-left text-white"></i>
       </button>
-      <h1 class="text-3xl font-bold tracking-wide">Edit Issue</h1>
+      <h1 class="text-3xl font-bold tracking-wide text-white">Edit Issue</h1>
     </div>
     <p class="text-gray-300 mb-6">Update issue details below</p>
 
@@ -28,7 +28,7 @@
     </div>
 
     <div *ngIf="issue && !notFound && !permissionDenied">
-      <div class="bg-white/10 rounded-xl border border-white/10 p-4 mb-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+      <div class="bg-white/10 rounded-xl border border-white/10 p-4 mb-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-white">
         <div>
           <p class="text-gray-400 text-xs uppercase font-semibold">Issue ID</p>
           <p class="font-bold text-blue-300">{{ issueId }}</p>
@@ -58,7 +58,7 @@
         </div>
       </div>
 
-      <form (ngSubmit)="onSubmit($event)" class="space-y-6" novalidate>
+      <form (ngSubmit)="onSubmit($event)" class="space-y-6 text-white" novalidate>
         <div>
           <label class="block text-sm font-semibold mb-2">Title</label>
           <input
@@ -67,7 +67,6 @@
             (input)="onInputChange()"
             name="title"
             placeholder="Enter issue title"
-            class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             required />
         </div>
 
@@ -80,8 +79,8 @@
             name="description"
             rows="5"
             placeholder="Issue description"
-            class="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            required></textarea>
+            required>
+          </textarea>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -145,8 +144,6 @@
             name="dueDate"
             (onSelect)="onInputChange()"
             [showIcon]="true"
-            inputStyleClass="bg-white/10 border border-white/20 text-white placeholder-gray-400 rounded-lg p-3 focus:ring-2 focus:ring-purple-500"
-            styleClass="theme-calendar w-full"
             [disabled]="loading">
           </p-calendar>
         </div>
@@ -160,7 +157,7 @@
           <button type="submit" class="bg-gradient-to-r from-pink-600 via-purple-700 to-blue-800 text-white shadow-lg hover:opacity-90 transition px-6 py-2 rounded-xl" [disabled]="loading || !hasChanges">Update Issue</button>
           <button type="button" class="px-6 py-2 rounded-xl bg-yellow-500/20 hover:bg-yellow-500/30 transition" (click)="resetForm()">Reset</button>
           <button type="button" class="px-6 py-2 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 transition" (click)="markAsCompleted()">Mark Completed</button>
-          <button type="button" class="px-6 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition" (click)="onCancel()">Cancel</button>
+          <button type="button" class="px-6 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition ms-auto" (click)="onCancel()">Cancel</button>
         </div>
       </form>
     </div>
