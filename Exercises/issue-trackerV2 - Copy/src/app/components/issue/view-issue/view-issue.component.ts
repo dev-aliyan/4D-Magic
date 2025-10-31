@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IssueService } from '../../../services/issue/issue.service';
 import { UserService } from '../../../services/user/user.service';
 import { Issue } from '../../../models/issue';
@@ -35,12 +36,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     ProgressSpinnerModule
   ]
 })
-export class ViewIssueComponent implements OnInit, OnChanges {
-  @Input() issueId = '';
-  @Output() closed = new EventEmitter<void>();
-  @Output() deleted = new EventEmitter<void>();
-  @Output() editRequested = new EventEmitter<string>();
-
+export class ViewIssueComponent implements OnInit {
+  issueId = '';
   issue: Issue | null = null;
   allUsers: User[] = [];
   currentUser: User | null = null;
@@ -50,18 +47,24 @@ export class ViewIssueComponent implements OnInit, OnChanges {
 
   constructor(
     private issueService: IssueService,
-    private userService: UserService
+    private userService: UserService,
+    private route: ActivatedRoute,
+    public router: Router
   ) {}
 
   ngOnInit(): void {
     this.currentUser = this.userService.getCurrentUser();
-    this.allUsers = this.userService.getAllUsers();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['issueId'] && this.issueId) {
-      this.loadIssue();
+    if (!this.currentUser) {
+      this.router.navigate(['/auth/login']);
+      return;
     }
+
+    this.allUsers = this.userService.getAllUsers();
+
+    this.route.params.subscribe(params => {
+      this.issueId = params['id'];
+      this.loadIssue();
+    });
   }
 
   loadIssue(): void {
@@ -88,11 +91,11 @@ export class ViewIssueComponent implements OnInit, OnChanges {
 
   getStateClass(state: string): string {
     switch (state) {
-      case 'new':         return 'bg-blue-100 text-blue-700 border-blue-300';
-      case 'in-progress': return 'bg-yellow-100 text-yellow-700 border-yellow-300';
-      case 'completed':   return 'bg-green-100 text-green-700 border-green-300';
-      case 'blocked':     return 'bg-red-100 text-red-700 border-red-300';
-      default:            return 'bg-gray-100 text-gray-700 border-gray-300';
+      case 'new':         return 'bg-blue-400/20 text-blue-300 border-blue-400/30';
+      case 'in-progress': return 'bg-yellow-400/20 text-yellow-300 border-yellow-400/30';
+      case 'completed':   return 'bg-green-400/20 text-green-300 border-green-400/30';
+      case 'blocked':     return 'bg-red-400/20 text-red-300 border-red-400/30';
+      default:            return 'bg-gray-400/20 text-gray-300 border-gray-400/30';
     }
   }
 
@@ -127,14 +130,14 @@ export class ViewIssueComponent implements OnInit, OnChanges {
   }
 
   editIssue(): void {
-    this.editRequested.emit(this.issueId);
+    this.router.navigate(['/dashboard', 'issue', 'edit', this.issueId]);
   }
 
   deleteIssue(): void {
     if (confirm(`Are you sure you want to delete issue ${this.issueId}?`)) {
       try {
         this.issueService.deleteIssue(this.issueId);
-        this.deleted.emit();
+        this.router.navigate(['/dashboard']);
       } catch (err: any) {
         alert(err.message);
       }
@@ -142,7 +145,7 @@ export class ViewIssueComponent implements OnInit, OnChanges {
   }
 
   goBack(): void {
-    this.closed.emit();
+    this.router.navigate(['/dashboard']);
   }
 
   getActivityActionText(action: string): string {

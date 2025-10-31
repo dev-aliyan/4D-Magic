@@ -1,4 +1,5 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../../models/user';
@@ -33,9 +34,6 @@ import { ToastModule } from 'primeng/toast';
   ],
 })
 export class CreateIssueComponent implements OnInit {
-  @Output() issueCreated = new EventEmitter<void>();
-  @Output() cancelled = new EventEmitter<void>();
-
   title = '';
   description = '';
   assignedTo = '';
@@ -51,13 +49,17 @@ export class CreateIssueComponent implements OnInit {
 
   constructor(
     private issueService: IssueService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router,
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {
+    // rely on AuthGuard for access; just hydrate local data
     this.currentUser = this.userService.getCurrentUser();
     if (!this.currentUser) {
-      this.error = 'No user logged in';
+      // ✅ correct auth path
+      this.router.navigate(['/auth/login']);
       return;
     }
 
@@ -105,7 +107,7 @@ export class CreateIssueComponent implements OnInit {
 
     this.loading = true;
     try {
-      this.issueService.createIssue({
+      const issue = this.issueService.createIssue({
         title: this.title.trim(),
         description: this.description.trim(),
         estimatedTime: this.estimatedTime,
@@ -117,8 +119,11 @@ export class CreateIssueComponent implements OnInit {
       this.success = true;
       this.resetForm();
 
+      // ✅ route to the *dashboard* child, not root
       setTimeout(() => {
-        this.issueCreated.emit();
+        this.zone.run(() =>
+          this.router.navigate(['/dashboard', 'issue', issue.id])
+        );
       }, 800);
     } catch (err: any) {
       this.error = err?.message || 'Failed to create issue. Please try again.';
@@ -136,6 +141,6 @@ export class CreateIssueComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.cancelled.emit();
+    this.router.navigate(['/dashboard']);
   }
 }

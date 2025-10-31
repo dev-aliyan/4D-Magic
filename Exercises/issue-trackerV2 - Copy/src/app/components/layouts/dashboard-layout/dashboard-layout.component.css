@@ -179,17 +179,3 @@
   background: rgba(124, 58, 237, 0.4);
 }
 
-::ng-deep .custom-modal .p-dialog-content {
-  background: linear-gradient(135deg, #030A26, #370F2F 55%, #821D3F) !important;
-  backdrop-filter: blur(20px) !important;
-  border-radius: 1.5rem !important;
-  border: 1px solid rgba(255,255,255,0.06);
-  box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
-}
-
-::ng-deep .custom-modal .p-dialog-header {
-  background: transparent !important;
-  color: white !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-}
-

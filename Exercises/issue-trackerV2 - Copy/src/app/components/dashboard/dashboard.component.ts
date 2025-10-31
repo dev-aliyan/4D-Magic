@@ -17,10 +17,6 @@ import { RippleModule } from 'primeng/ripple';
 import { TooltipModule } from 'primeng/tooltip';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { DialogModule } from 'primeng/dialog';
-import { CreateIssueComponent } from '../issue/create-issue/create-issue.component';
-import { EditIssueComponent } from '../issue/edit-issue/edit-issue.component';
-import { ViewIssueComponent } from '../issue/view-issue/view-issue.component';
 
 type StateKey = Issue['state'];
 
@@ -32,13 +28,13 @@ type StateKey = Issue['state'];
     InputTextModule, ButtonModule, TagModule, CardModule,
     ChipModule, TabViewModule, TableModule, RippleModule,
     TooltipModule, TitleCasePipe, InputTextareaModule,
-    DragDropModule, DialogModule, CreateIssueComponent,
-    EditIssueComponent, ViewIssueComponent
+    DragDropModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   encapsulation: ViewEncapsulation.None
 })
+
 export class DashboardComponent {
 
   private allIssues = signal<Issue[]>([]);
@@ -49,12 +45,6 @@ export class DashboardComponent {
   myOnly = signal<boolean>(false);
 
   currentUser = signal<User | null>(null);
-
-  // Modal states
-  showCreateModal = signal<boolean>(false);
-  showEditModal = signal<boolean>(false);
-  showViewModal = signal<boolean>(false);
-  selectedIssueId = signal<string>('');
 
   constructor(
     private issueSvc: IssueService,
@@ -136,54 +126,5 @@ export class DashboardComponent {
     this.search.set('');
     this.stateFilter.set('all');
     this.myOnly.set(false);
-  }
-
-  // Modal methods
-  openCreateModal() {
-    this.showCreateModal.set(true);
-  }
-
-  openViewModal(issueId: string) {
-    this.selectedIssueId.set(issueId);
-    this.showViewModal.set(true);
-  }
-
-  openEditModal(issueId: string) {
-    this.selectedIssueId.set(issueId);
-    this.showEditModal.set(true);
-  }
-
-  closeCreateModal() {
-    this.showCreateModal.set(false);
-  }
-
-  closeViewModal() {
-    this.showViewModal.set(false);
-    this.selectedIssueId.set('');
-  }
-
-  closeEditModal() {
-    this.showEditModal.set(false);
-    this.selectedIssueId.set('');
-  }
-
-  onIssueCreated() {
-    this.closeCreateModal();
-    this.allIssues.set([...this.issueSvc.getAllIssues()]);
-  }
-
-  onIssueUpdated() {
-    this.closeEditModal();
-    this.allIssues.set([...this.issueSvc.getAllIssues()]);
-  }
-
-  onIssueDeleted() {
-    this.closeViewModal();
-    this.allIssues.set([...this.issueSvc.getAllIssues()]);
-  }
-
-  onEditFromView(issueId: string) {
-    this.closeViewModal();
-    this.openEditModal(issueId);
   }
 }

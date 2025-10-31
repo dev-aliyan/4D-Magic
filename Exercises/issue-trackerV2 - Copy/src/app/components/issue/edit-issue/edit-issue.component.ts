@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -17,7 +18,6 @@ import { MessageModule } from 'primeng/message';
 import { MessagesModule } from 'primeng/messages';
 import { ToastModule } from 'primeng/toast';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-edit-issue',
@@ -30,11 +30,8 @@ import { Router } from '@angular/router';
     InputNumberModule, ButtonModule, MessageModule, MessagesModule, ToastModule, ProgressSpinnerModule
   ]
 })
-export class EditIssueComponent implements OnInit, OnChanges {
-  @Input() issueId = '';
-  @Output() issueUpdated = new EventEmitter<void>();
-  @Output() cancelled = new EventEmitter<void>();
-
+export class EditIssueComponent implements OnInit {
+  issueId = '';
   issue: Issue | null = null;
 
   title = '';
@@ -67,19 +64,25 @@ export class EditIssueComponent implements OnInit, OnChanges {
   constructor(
     private issueService: IssueService,
     private userService: UserService,
-    private router: Router
+    private route: ActivatedRoute,
+    public router: Router,
+    private zone: NgZone
   ) {}
 
   ngOnInit(): void {
     this.currentUser = this.userService.getCurrentUser();
+    if (!this.currentUser) {
+      this.router.navigate(['/auth/login']);
+      return;
+    }
+
     this.allUsers = this.userService.getAllUsers();
     this.buildUserOptions();
-  }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['issueId'] && this.issueId) {
+    this.route.params.subscribe(params => {
+      this.issueId = params['id'];
       this.loadIssue();
-    }
+    });
   }
 
   buildUserOptions(): void {
@@ -89,8 +92,6 @@ export class EditIssueComponent implements OnInit, OnChanges {
   loadIssue(): void {
     this.loading = true;
     this.error = '';
-    this.notFound = false;
-    this.permissionDenied = false;
 
     const foundIssue = this.issueService.getIssueById(this.issueId);
 
@@ -165,9 +166,10 @@ export class EditIssueComponent implements OnInit, OnChanges {
       this.originalIssue = JSON.parse(JSON.stringify(this.issue));
       this.hasChanges = false;
 
+      // ✅ navigate to the correct view route under dashboard
       setTimeout(() => {
-        this.issueUpdated.emit();
-      }, 800);
+        this.zone.run(() => this.router.navigate(['/dashboard', 'issue', this.issueId]));
+      }, 0);
 
     } catch (err: any) {
       this.error = err?.message || 'Failed to update issue. Please try again.';
@@ -179,10 +181,10 @@ export class EditIssueComponent implements OnInit, OnChanges {
   onCancel(): void {
     if (this.hasChanges) {
       if (confirm('You have unsaved changes. Do you want to discard them?')) {
-        this.cancelled.emit();
+        this.router.navigate(['/dashboard']);
       }
     } else {
-      this.cancelled.emit();
+      this.router.navigate(['/dashboard']);
     }
   }
 
@@ -209,11 +211,4 @@ export class EditIssueComponent implements OnInit, OnChanges {
     const u = this.allUsers.find(x => x.id === id);
     return u ? `${u.firstName} ${u.lastName}` : 'Unknown';
   }
-
-  goToDashboard(): void {
-    this.router.navigate(['/dashboard']);
-  }
-
 }
-
-
