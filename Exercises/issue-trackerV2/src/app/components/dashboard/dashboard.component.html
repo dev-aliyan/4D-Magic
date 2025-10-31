@@ -29,9 +29,10 @@
 
       <p-button
         icon="pi pi-filter-slash"
-        class="p-button-text text-white border border-white rounded-md py-2"
+        class="clear-filter-btn"
         (click)="clearFilters()"
       ></p-button>
+
     </div>
 
     <div class="flex flex-wrap items-center gap-2">
@@ -70,15 +71,8 @@
         [label]="myOnly() ? 'My open: On' : 'My open: Off'"
         (click)="myOnly.set(!myOnly())"
       ></p-chip>
-
-      <div class="ml-auto text-sm text-gray-300 hidden md:flex gap-6">
-        <span>Unified search + quick chips</span>
-        <span>Kanban default</span>
-        <span>Table for dense ops</span>
-      </div>
     </div>
 
-    <!-- KPIs -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
       <p-card styleClass="kpi card-item">
         <div class="kpi-title">Total</div>
@@ -103,7 +97,7 @@
 <p-tabView class="mt-4">
   <p-tabPanel header="Kanban">
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-      <!-- Backlog -->
+
       <p-card
         styleClass="kanban-col"
         cdkDropList
@@ -165,7 +159,6 @@
         </div>
       </p-card>
 
-      <!-- In Progress -->
       <p-card
         styleClass="kanban-col"
         cdkDropList
@@ -227,7 +220,6 @@
         </div>
       </p-card>
 
-      <!-- Blocked -->
       <p-card
         styleClass="kanban-col"
         cdkDropList

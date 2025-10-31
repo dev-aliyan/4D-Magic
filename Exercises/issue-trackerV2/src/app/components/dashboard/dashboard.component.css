@@ -132,3 +132,61 @@
   color: white !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
+
+:host ::ng-deep .p-inputtextarea {
+  background: rgba(17, 24, 39, 0.2); 
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  resize: vertical;
+  backdrop-filter: blur(10px);
+  transition: all 0.25s ease;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+}
+
+:host ::ng-deep .p-inputtextarea:hover {
+  border-color: #7c3aed;
+  box-shadow: 0 0 8px rgba(124, 58, 237, 0.4);
+}
+
+:host ::ng-deep .p-inputtextarea:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.6);
+  outline: none;
+  background: rgba(17, 24, 39, 0.4);
+}
+
+:host ::ng-deep .p-inputtextarea::placeholder {
+  color: rgba(148, 163, 184, 0.8);
+}
+
+:host ::ng-deep .clear-filter-btn .p-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+:host ::ng-deep .clear-filter-btn .p-button:hover {
+  background: linear-gradient(90deg, #d946ef, #6d28d9, #1e40af);
+  border-color: transparent;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
+}
+
+:host ::ng-deep .clear-filter-btn .p-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+}
