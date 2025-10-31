@@ -1,14 +1,12 @@
-import { Component, computed, effect, signal } from '@angular/core';
+import { Component, computed, signal, ViewEncapsulation } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-
 import { IssueService } from '../../services/issue/issue.service';
 import { UserService } from '../../services/user/user.service';
 import { Issue } from '../../models/issue';
 import { User } from '../../models/user';
-
-/// PrimeNG
-import { Card, CardModule } from 'primeng/card';
+import { CardModule } from 'primeng/card';
+import { InputTextareaModule } from "primeng/inputtextarea";
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
@@ -18,10 +16,7 @@ import { TableModule } from 'primeng/table';
 import { RippleModule } from 'primeng/ripple';
 import { TooltipModule } from 'primeng/tooltip';
 import { FormsModule } from '@angular/forms';
-import { InputTextareaModule } from "primeng/inputtextarea";
-import { ViewEncapsulation } from '@angular/core';
-
-
+import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 
 type StateKey = Issue['state'];
 
@@ -32,13 +27,14 @@ type StateKey = Issue['state'];
     CommonModule, RouterLink, TitleCasePipe, FormsModule,
     InputTextModule, ButtonModule, TagModule, CardModule,
     ChipModule, TabViewModule, TableModule, RippleModule,
-    TooltipModule, TitleCasePipe,
-    InputTextareaModule
-],
+    TooltipModule, TitleCasePipe, InputTextareaModule,
+    DragDropModule
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   encapsulation: ViewEncapsulation.None
 })
+
 export class DashboardComponent {
 
   private allIssues = signal<Issue[]>([]);
@@ -60,7 +56,6 @@ export class DashboardComponent {
     this.issueSvc.issues$.subscribe(list => this.allIssues.set(list));
   }
 
-  // derived data
   filtered = computed(() => {
     const q = this.search().trim().toLowerCase();
     const state = this.stateFilter();
@@ -102,6 +97,11 @@ export class DashboardComponent {
     return u ? `${u.firstName} ${u.lastName}` : '—';
   }
 
+  createdByName(id: string): string {
+    const u = this.users().find(x => x.id === id);
+    return u ? `${u.firstName} ${u.lastName}` : '—';
+  }
+
   stateSeverity(s: StateKey): 'success' | 'info' | 'warning' | 'danger' | 'secondary' {
     switch (s) {
       case 'new': return 'info';
@@ -110,6 +110,16 @@ export class DashboardComponent {
       case 'blocked': return 'danger';
       default: return 'secondary';
     }
+  }
+
+  drop(event: CdkDragDrop<Issue[]>, newState: StateKey) {
+    if (event.previousContainer === event.container) return;
+
+    const item = event.previousContainer.data[event.previousIndex];
+    
+    this.issueSvc.updateIssue(item.id, { state: newState });
+    
+    this.allIssues.set([...this.issueSvc.getAllIssues()]);
   }
 
   clearFilters() {

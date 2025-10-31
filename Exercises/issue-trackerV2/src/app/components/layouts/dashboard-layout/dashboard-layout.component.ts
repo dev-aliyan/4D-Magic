@@ -25,10 +25,8 @@ export class DashboardLayoutComponent implements OnInit, OnDestroy {
   private sub?: Subscription;
 
   menuItems: MenuItem[] = [
-    { label: 'Dashboard',  icon: 'pi pi-home',        route: '/dashboard',               badge: null },
+    { label: 'Boards',  icon: 'pi pi-table',        route: '/dashboard',               badge: null },
     { label: 'Issues',     icon: 'pi pi-list',        route: '/dashboard/issues',        badge: null },
-    { label: 'Create Issue', icon: 'pi pi-plus-circle', route: '/dashboard/issue/create', badge: null },
-    // { label: 'My Issues', icon: 'pi pi-user',       route: '/dashboard/my-issues',     badge: null },
   ];
 
   constructor(

@@ -1,81 +1,115 @@
-<div class="backdrop-blur-lg border border-white/20 rounded-2xl shadow-lg overflow-hidden">
-      <div class="p-6 border-b border-white/10">
-        <h2 class="text-lg font-semibold text-white">All Issues</h2>
-      </div>
+  <div class="flex flex-col gap-5">
 
-      <div class="overflow-x-auto">
-        <p-table
-          [value]="filteredIssues"
-          responsiveLayout="scroll"
-          styleClass="w-full"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[5, 10, 20, 50]"
-          [tableStyle]="{ 'min-width': '50rem' }"
-        >
-          <ng-template pTemplate="header">
-            <th class="bg-white/5 text-white" pSortableColumn="id">ID </th>
-            <th class="bg-white/5 text-white" pSortableColumn="title">Title</th>
-            <th class="bg-white/5 text-white" pSortableColumn="state">State</th>
-            <th class="bg-white/5 text-white">Assigned To</th>
-            <th class="bg-white/5 text-white" pSortableColumn="estimatedTime">Est. Time</th>
-            <th class="bg-white/5 text-white" pSortableColumn="dueDate">Due Date</th>
-            <th class="bg-white/5 text-white">Actions</th>
-          </ng-template>
-
-          <ng-template pTemplate="body" let-issue>
-            <tr class="bg-white/5 text-white">
-              <td class="font-bold text-white">{{ issue.id }}</td>
-              <td>
-                <div class="flex flex-col text-white">
-                  <span class="font-medium">{{ issue.title }}</span>
-                  <span class="text-xs text-gray-300 truncate">{{ issue.description | slice:0:60 }}...</span>
-                </div>
-              </td>
-              <td>
-                <p-tag [value]="issue.state | titlecase" [severity]="getStateSeverity(issue.state)"></p-tag>
-              </td>
-              <td class="text-sm ">{{ getUserName(issue.assignedTo) }}</td>
-              <td class="font-medium">{{ issue.estimatedTime }}h</td>
-              <td>{{ issue.dueDate | date: 'short' }}</td>
-              <td class="flex gap-2 justify-center">
-                <button
-                  (click)="viewIssue(issue)"
-                  class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-500 hover:bg-blue-600 text-white transition duration-200"
-                  title="View Issue"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                </button>
-
-                <button
-                  *ngIf="canEditIssue(issue)"
-                  (click)="editIssue(issue)"
-                  class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-yellow-500 hover:bg-yellow-600 text-white transition duration-200"
-                  title="Edit Issue"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                </button>
-                <button
-                  *ngIf="canDeleteIssue(issue)"
-                  (click)="deleteIssue(issue)"
-                  class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 text-white transition duration-200"
-                  title="Delete Issue"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                </button>
-
-              </td>
-            </tr>
-          </ng-template>
-
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="7" class="text-center py-8">
-                <i class="pi pi-inbox text-4xl text-gray-200 mb-3 block"></i>
-                <p class="text-gray-300">No issues found</p>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
+    <div class="flex items-center justify-between mb-4">
+      <h2 *ngIf="currentUser()?.role == 'admin'" class="text-white text-2xl font-semibold">All Issues</h2>
+      <h2 *ngIf="currentUser()?.role == 'user'" class="text-white text-2xl font-semibold">My Issues</h2>
     </div>
+    <p-card styleClass="surface-card border-none">
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <span class="relative flex-grow">
+            <input
+              pInputTextarea
+              type="text"
+              placeholder="Search by title, ID, or assignee…"
+              [ngModel]="search()"
+              (ngModelChange)="search.set($event)"
+              class="w-full p-2"
+            />
+            <i class="pi pi-search absolute right-4 top-3"></i>
+          </span>
+
+          <p-button
+            icon="pi pi-filter-slash"
+            class="p-button-text text-white border border-white rounded-md py-2"
+            (click)="clearFilters()"
+          ></p-button>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <p-chip
+            [label]="'All states'"
+            [removable]="false"
+            [class.active-chip]="stateFilter()==='all'"
+            (click)="stateFilter.set('all')"
+          ></p-chip>
+
+          <p-chip
+            label="New"
+            [class.active-chip]="stateFilter()==='new'"
+            (click)="stateFilter.set('new')"
+          ></p-chip>
+
+          <p-chip
+            label="In progress"
+            [class.active-chip]="stateFilter()==='in-progress'"
+            (click)="stateFilter.set('in-progress')"
+          ></p-chip>
+
+          <p-chip
+            label="Completed"
+            [class.active-chip]="stateFilter()==='completed'"
+            (click)="stateFilter.set('completed')"
+          ></p-chip>
+
+          <p-chip
+            label="Blocked"
+            [class.active-chip]="stateFilter()==='blocked'"
+            (click)="stateFilter.set('blocked')"
+          ></p-chip>
+
+          <p-chip
+            [label]="myOnly() ? 'My open: On' : 'My open: Off'"
+            (click)="myOnly.set(!myOnly())"
+          ></p-chip>
+
+          <div class="ml-auto text-sm text-gray-300 hidden md:flex gap-6">
+            <span>Unified search + quick chips</span>
+            <span>Kanban default</span>
+            <span>Table for dense ops</span>
+          </div>
+        </div>
+
+      </div>
+    </p-card>
+
+    <p-card styleClass="surface-card border-none">
+      <p-table
+        [value]="filtered()"
+        [paginator]="true"
+        [rows]="10"
+        responsiveLayout="scroll"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 110px">ID</th>
+            <th>Title</th>
+            <th style="width: 160px">State</th>
+            <th style="width: 220px">Assignee</th>
+            <th style="width: 120px">Est.</th>
+            <th style="width: 140px">Due</th>
+            <th style="width: 120px"></th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-i>
+          <tr>
+            <td>{{ i.id }}</td>
+            <td>{{ i.title }}</td>
+            <td>
+              <p-tag [severity]="stateSeverity(i.state)" [value]="i.state | titlecase"></p-tag>
+            </td>
+            <td>{{ assigneeName(i.assignedTo) }}</td>
+            <td>{{ i.estimatedTime }}h</td>
+            <td>{{ i.dueDate | date: 'MM/dd/yy' }}</td>
+            <td class="text-right">
+              <a pButton icon="pi pi-eye" class="p-button-text mr-1"
+                  [routerLink]="['/dashboard','issue', i.id]"></a>
+              <a pButton icon="pi pi-pencil" class="p-button-text"
+                  [routerLink]="['/dashboard','issue','edit', i.id]"></a>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>

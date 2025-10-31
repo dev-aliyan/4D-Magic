@@ -1,11 +1,14 @@
-
-    <div class="flex items-center justify-between mb-4">
+<div class="flex items-center justify-between mb-4">
       <h2 class="text-white text-2xl font-semibold">Issue Tracker — Simplified Dashboard</h2>
       <a
         pButton
         label="New Issue"
-        class=" rounded-xl p-button-info text-white px-3 py-2"
-        [routerLink]="['/dashboard','issue','create']"
+        [routerLink]="['/dashboard', 'issue', 'create']"
+        class="px-5 py-2.5 rounded-xl text-white font-semibold tracking-wide 
+              bg-gradient-to-r from-fuchsia-500 via-violet-700 to-blue-700 
+              shadow-lg backdrop-blur-md border border-white/10 
+              hover:scale-[1.03] hover:shadow-fuchsia-500/40 
+              transition-all duration-300 active:scale-95"
       ></a>
     </div>
     <p-card styleClass="surface-card border-none">
@@ -93,139 +96,264 @@
             <div class="kpi-value">{{ kpiBlocked() }}</div>
           </p-card>
         </div>
+        
+
       </div>
     </p-card>
 
     <p-tabView class="mt-4">
       <p-tabPanel header="Kanban">
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-          <p-card styleClass="kanban-col">
+          <!-- Backlog -->
+          <p-card
+            styleClass="kanban-col"
+            cdkDropList
+            #backlogList="cdkDropList"
+            [cdkDropListData]="colBacklog()"
+            [cdkDropListConnectedTo]="[progressList, blockedList, doneList]"
+            (cdkDropListDropped)="drop($event, 'new')"
+          >
             <div class="col-title">Backlog</div>
-            <div class="space-y-3">
-              <ng-container *ngFor="let i of colBacklog(); trackBy: trackById">
-                <div class="card-item flex justify-between">
-                  <div class="flex flex-col">
-                    <div class="id">{{ i.id }}</div>
-                    <div class="title text-sm">{{ i.title }}</div>
+            <div class="space-y-3 min-h-[100px]">
+              <div
+                class="card-item flex flex-col gap-3"
+                *ngFor="let i of colBacklog(); trackBy: trackById"
+                cdkDrag
+              >
+                <div class="flex justify-between items-center">
+                  <div class="id">{{ i.id }}</div>
+                  <p-tag
+                    [severity]="stateSeverity(i.state)"
+                    [value]="i.state | titlecase"
+                  ></p-tag>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                  <div class="text-white text-sm font-medium">{{ i.title }}</div>
+                  <div class="text-neutral-400 text-xs">{{ i.description }}</div>
+                </div>
+
+                <div class="flex flex-col gap-1 text-xs text-neutral-500">
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-user text-xs"></i>
+                    <span>Created by: {{ createdByName(i.createdBy) }}</span>
                   </div>
-                  <div class="flex flex-col items-end gap-5">
-                    <p-tag [severity]="stateSeverity(i.state)" [value]="i.state | titlecase"></p-tag>
-                    <div class="actions">
-                      <a
-                        pButton
-                        icon="pi pi-eye"
-                        class="p-button-text text-white flex rounded-full"
-                        style="font-size: 0.9rem;"
-                        [routerLink]="['/dashboard','issue', i.id]"
-                      ></a>
-                      <a
-                        pButton
-                        icon="pi pi-pencil"
-                        class="p-button-text text-white flex rounded-full w-5 h-5"
-                        style="font-size: 0.9rem;"
-                        [routerLink]="['/dashboard','issue','edit', i.id]"
-                      ></a>
-                    </div>
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-user-plus text-xs"></i>
+                    <span>Assigned to: {{ assigneeName(i.assignedTo) }}</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-calendar text-xs"></i>
+                    <span>Created: {{ i.createdAt | date: 'MMM d, y' }}</span>
                   </div>
                 </div>
-              </ng-container>
 
+                <div class="actions flex justify-end gap-2">
+                  <a
+                    pButton
+                    icon="pi pi-eye"
+                    class="p-button-text text-white flex rounded-full"
+                    [routerLink]="['/dashboard', 'issue', i.id]"
+                  ></a>
+                  <a
+                    pButton
+                    icon="pi pi-pencil"
+                    class="p-button-text text-white flex rounded-full"
+                    [routerLink]="['/dashboard', 'issue', 'edit', i.id]"
+                  ></a>
+                </div>
+              </div>
             </div>
           </p-card>
 
           <!-- In Progress -->
-          <p-card styleClass="kanban-col">
+          <p-card
+            styleClass="kanban-col"
+            cdkDropList
+            #progressList="cdkDropList"
+            [cdkDropListData]="colProgress()"
+            [cdkDropListConnectedTo]="[backlogList, blockedList, doneList]"
+            (cdkDropListDropped)="drop($event, 'in-progress')"
+          >
             <div class="col-title">In Progress</div>
-            <div class="space-y-3">
-              <ng-container *ngFor="let i of colProgress(); trackBy: trackById">
-                <div class="card-item">
+            <div class="space-y-3 min-h-[100px]">
+              <div
+                class="card-item flex flex-col gap-3"
+                *ngFor="let i of colProgress(); trackBy: trackById"
+                cdkDrag
+              >
+                <div class="flex justify-between items-center">
                   <div class="id">{{ i.id }}</div>
-                  <div class="title">{{ i.title }}</div>
                   <p-tag
                     [severity]="stateSeverity(i.state)"
                     [value]="i.state | titlecase"
                   ></p-tag>
-                  <div class="actions">
-                    <button
-                      icon="pi pi-eye"
-                      severity="info"
-                      [routerLink]="['/dashboard', 'issue', i.id]"
-                    ></button>
-                    <a
-                      pButton
-                      icon="pi pi-pencil"
-                      class="p-button-text"
-                      [routerLink]="['/dashboard', 'issue', 'edit', i.id]"
-                    ></a>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                  <div class="text-white text-sm font-medium">{{ i.title }}</div>
+                  <div class="text-neutral-400 text-xs">{{ i.description }}</div>
+                </div>
+
+                <div class="flex flex-col gap-1 text-xs text-neutral-500">
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-user text-xs"></i>
+                    <span>Created by: {{ createdByName(i.createdBy) }}</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-user-plus text-xs"></i>
+                    <span>Assigned to: {{ assigneeName(i.assignedTo) }}</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-calendar text-xs"></i>
+                    <span>Created: {{ i.createdAt | date: 'MMM d, y' }}</span>
                   </div>
                 </div>
-              </ng-container>
+
+                <div class="actions flex justify-end gap-2">
+                  <a
+                    pButton
+                    icon="pi pi-eye"
+                    class="p-button-text text-white flex rounded-full"
+                    [routerLink]="['/dashboard', 'issue', i.id]"
+                  ></a>
+                  <a
+                    pButton
+                    icon="pi pi-pencil"
+                    class="p-button-text text-white flex rounded-full"
+                    [routerLink]="['/dashboard', 'issue', 'edit', i.id]"
+                  ></a>
+                </div>
+              </div>
             </div>
           </p-card>
+
           <!-- Blocked -->
-          <p-card styleClass="kanban-col">
+          <p-card
+            styleClass="kanban-col"
+            cdkDropList
+            #blockedList="cdkDropList"
+            [cdkDropListData]="colBlocked()"
+            [cdkDropListConnectedTo]="[backlogList, progressList, doneList]"
+            (cdkDropListDropped)="drop($event, 'blocked')"
+          >
             <div class="col-title">Blocked</div>
-            <div class="space-y-3">
-              <ng-container *ngFor="let i of colBlocked(); trackBy: trackById">
-                <div class="card-item">
+            <div class="space-y-3 min-h-[100px]">
+              <div
+                class="card-item flex flex-col gap-3"
+                *ngFor="let i of colBlocked(); trackBy: trackById"
+                cdkDrag
+              >
+                <div class="flex justify-between items-center">
                   <div class="id">{{ i.id }}</div>
-                  <div class="title">{{ i.title }}</div>
                   <p-tag
                     [severity]="stateSeverity(i.state)"
                     [value]="i.state | titlecase"
                   ></p-tag>
-                  <div class="actions">
-                    <a
-                      pButton
-                      icon="pi pi-eye"
-                      class="p-button-text"
-                      [routerLink]="['/dashboard', 'issue', i.id]"
-                    ></a>
-                    <a
-                      pButton
-                      icon="pi pi-pencil"
-                      class="p-button-text"
-                      [routerLink]="['/dashboard', 'issue', 'edit', i.id]"
-                    ></a>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                  <div class="text-white text-sm font-medium">{{ i.title }}</div>
+                  <div class="text-neutral-400 text-xs">{{ i.description }}</div>
+                </div>
+
+                <div class="flex flex-col gap-1 text-xs text-neutral-500">
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-user text-xs"></i>
+                    <span>Created by: {{ createdByName(i.createdBy) }}</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-user-plus text-xs"></i>
+                    <span>Assigned to: {{ assigneeName(i.assignedTo) }}</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-calendar text-xs"></i>
+                    <span>Created: {{ i.createdAt | date: 'MMM d, y' }}</span>
                   </div>
                 </div>
-              </ng-container>
+
+                <div class="actions flex justify-end gap-2">
+                  <a
+                    pButton
+                    icon="pi pi-eye"
+                    class="p-button-text text-white flex rounded-full"
+                    [routerLink]="['/dashboard', 'issue', i.id]"
+                  ></a>
+                  <a
+                    pButton
+                    icon="pi pi-pencil"
+                    class="p-button-text text-white flex rounded-full"
+                    [routerLink]="['/dashboard', 'issue', 'edit', i.id]"
+                  ></a>
+                </div>
+              </div>
             </div>
           </p-card>
 
           <!-- Done -->
-          <p-card styleClass="kanban-col">
+          <p-card
+            styleClass="kanban-col"
+            cdkDropList
+            #doneList="cdkDropList"
+            [cdkDropListData]="colDone()"
+            [cdkDropListConnectedTo]="[backlogList, progressList, blockedList]"
+            (cdkDropListDropped)="drop($event, 'completed')"
+          >
             <div class="col-title">Done</div>
-            <div class="space-y-3">
-              <ng-container *ngFor="let i of colDone(); trackBy: trackById">
-                <div class="card-item">
+            <div class="space-y-3 min-h-[100px]">
+              <div
+                class="card-item flex flex-col gap-3"
+                *ngFor="let i of colDone(); trackBy: trackById"
+                cdkDrag
+              >
+                <div class="flex justify-between items-center">
                   <div class="id">{{ i.id }}</div>
-                  <div class="title">{{ i.title }}</div>
                   <p-tag
                     [severity]="stateSeverity(i.state)"
                     [value]="i.state | titlecase"
                   ></p-tag>
-                  <div class="actions">
-                    <a
-                      pButton
-                      icon="pi pi-eye"
-                      class="p-button-text"
-                      [routerLink]="['/dashboard', 'issue', i.id]"
-                    ></a>
-                    <a
-                      pButton
-                      icon="pi pi-pencil"
-                      class="p-button-text"
-                      [routerLink]="['/dashboard', 'issue', 'edit', i.id]"
-                    ></a>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                  <div class="text-white text-sm font-medium">{{ i.title }}</div>
+                  <div class="text-neutral-400 text-xs">{{ i.description }}</div>
+                </div>
+
+                <div class="flex flex-col gap-1 text-xs text-neutral-500">
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-user text-xs"></i>
+                    <span>Created by: {{ createdByName(i.createdBy) }}</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-user-plus text-xs"></i>
+                    <span>Assigned to: {{ assigneeName(i.assignedTo) }}</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-calendar text-xs"></i>
+                    <span>Created: {{ i.createdAt | date: 'MMM d, y' }}</span>
                   </div>
                 </div>
-              </ng-container>
+
+                <div class="actions flex justify-end gap-2">
+                  <a
+                    pButton
+                    icon="pi pi-eye"
+                    class="p-button-text text-white flex rounded-full"
+                    [routerLink]="['/dashboard', 'issue', i.id]"
+                  ></a>
+                  <a
+                    pButton
+                    icon="pi pi-pencil"
+                    class="p-button-text text-white flex rounded-full"
+                    [routerLink]="['/dashboard', 'issue', 'edit', i.id]"
+                  ></a>
+                </div>
+              </div>
             </div>
           </p-card>
-
         </div>
       </p-tabPanel>
+
 
       <p-tabPanel header="Table">
         <p-card styleClass="surface-card border-none">
