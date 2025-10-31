@@ -213,7 +213,6 @@
   color: #fff !important;
 }
 
-/* Disabled state */
 :host ::ng-deep .p-calendar.p-disabled,
 :host ::ng-deep .p-calendar .p-inputtext:disabled {
   opacity: 0.5;

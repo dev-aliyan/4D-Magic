@@ -50,7 +50,6 @@ export class DashboardComponent {
 
   currentUser = signal<User | null>(null);
 
-  // Modal states
   showCreateModal = signal<boolean>(false);
   showEditModal = signal<boolean>(false);
   showViewModal = signal<boolean>(false);
@@ -138,7 +137,6 @@ export class DashboardComponent {
     this.myOnly.set(false);
   }
 
-  // Modal methods
   openCreateModal() {
     this.showCreateModal.set(true);
   }

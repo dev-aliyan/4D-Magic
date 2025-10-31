@@ -106,11 +106,9 @@ export class EditIssueComponent implements OnInit, OnChanges {
       return;
     }
 
-    // snapshot for change detection
     this.originalIssue = JSON.parse(JSON.stringify(foundIssue));
     this.issue = foundIssue;
 
-    // bind fields
     this.title = foundIssue.title;
     this.description = foundIssue.description;
     this.state = foundIssue.state;
@@ -141,7 +139,6 @@ export class EditIssueComponent implements OnInit, OnChanges {
     this.error = '';
     this.success = false;
 
-    // validations
     if (!this.title.trim() || this.title.trim().length < 5) { this.error = 'Issue title must be at least 5 characters long.'; return; }
     if (!this.description.trim() || this.description.trim().length < 10) { this.error = 'Issue description must be at least 10 characters long.'; return; }
     if (!this.estimatedTime || this.estimatedTime <= 0 || this.estimatedTime > 1000) { this.error = 'Estimated time must be between 1 and 1000 hours.'; return; }

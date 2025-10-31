@@ -59,7 +59,6 @@ export class AllIssuesComponent {
     this.issueSvc.issues$.subscribe((list) => this.allIssues.set(list));
   }
 
-  // ✅ Updated filter logic (admin sees all, user sees only their own)
   filtered = computed(() => {
     const q = this.search().trim().toLowerCase();
     const state = this.stateFilter();
@@ -69,16 +68,12 @@ export class AllIssuesComponent {
     const isAdmin = currentUser?.role === 'admin';
 
     return this.allIssues().filter((i) => {
-      // show only user's issues if not admin
       if (!isAdmin && meId && i.assignedTo !== meId) return false;
 
-      // filter by state
       if (state !== 'all' && i.state !== state) return false;
 
-      // "My open" filter (for both admin and user)
       if (meOnly && meId && i.assignedTo !== meId) return false;
 
-      // search filter
       if (!q) return true;
 
       const assignee = this.users().find((u) => u.id === i.assignedTo);

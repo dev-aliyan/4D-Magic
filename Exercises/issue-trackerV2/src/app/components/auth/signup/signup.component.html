@@ -9,41 +9,41 @@
     <form (ngSubmit)="onSignup()" class="space-y-4">
       <div class="flex gap-2">
         <input type="text" placeholder="First Name" [(ngModel)]="firstName" name="firstName"
-               class="w-1/2 px-4 py-2 bg-white/10 text-white rounded-lg outline-none border border-white/20 focus:border-pink-400" />
+          class="w-1/2 px-4 py-2 bg-white/10 text-white rounded-lg outline-none border border-white/20 focus:border-pink-400" />
         <input type="text" placeholder="Last Name" [(ngModel)]="lastName" name="lastName"
-               class="w-1/2 px-4 py-2 bg-white/10 text-white rounded-lg outline-none border border-white/20 focus:border-pink-400" />
+          class="w-1/2 px-4 py-2 bg-white/10 text-white rounded-lg outline-none border border-white/20 focus:border-pink-400" />
       </div>
 
       <input type="email" placeholder="Email" [(ngModel)]="email" name="email"
-             class="w-full px-4 py-2 bg-white/10 text-white rounded-lg outline-none border border-white/20 focus:border-pink-400" />
+        class="w-full px-4 py-2 bg-white/10 text-white rounded-lg outline-none border border-white/20 focus:border-pink-400" />
 
       <div class="relative">
         <input [type]="passwordVisible ? 'text' : 'password'" placeholder="Password"
-               [(ngModel)]="password" name="password"
-               class="w-full px-4 py-2 bg-white/10 text-white rounded-lg outline-none border border-white/20 focus:border-pink-400" />
+          [(ngModel)]="password" name="password"
+          class="w-full px-4 py-2 bg-white/10 text-white rounded-lg outline-none border border-white/20 focus:border-pink-400" />
         <button type="button" (click)="togglePasswordVisibility()" 
-                class="absolute right-3 top-2 text-gray-300 hover:text-white">
+          class="absolute right-3 top-2 text-gray-300 hover:text-white">
           <i class="fa" [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
         </button>
       </div>
 
       <div class="relative">
         <input [type]="confirmPasswordVisible ? 'text' : 'password'" placeholder="Confirm Password"
-               [(ngModel)]="confirmPassword" name="confirmPassword"
-               class="w-full px-4 py-2 bg-white/10 text-white rounded-lg outline-none border border-white/20 focus:border-pink-400" />
+          [(ngModel)]="confirmPassword" name="confirmPassword"
+          class="w-full px-4 py-2 bg-white/10 text-white rounded-lg outline-none border border-white/20 focus:border-pink-400" />
         <button type="button" (click)="toggleConfirmPasswordVisibility()" 
-                class="absolute right-3 top-2 text-gray-300 hover:text-white">
+          class="absolute right-3 top-2 text-gray-300 hover:text-white">
           <i class="fa" [ngClass]="confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
         </button>
       </div>
 
       <select [(ngModel)]="role" name="role"
-              class="w-full px-4 py-2 bg-white/10 text-white rounded-lg outline-none border border-white/20 focus:border-pink-400">
+        class="w-full px-4 py-2 bg-white/10 text-white rounded-lg outline-none border border-white/20 focus:border-pink-400">
         <option *ngFor="let r of roles" [ngValue]="r.value">{{ r.label }}</option>
       </select>
 
       <button type="submit" (click)="onSignup()"
-              class="w-full py-2 bg-gradient-to-r from-pink-600 via-purple-700 to-blue-800 text-white rounded-lg shadow-lg hover:opacity-90 transition">
+        class="w-full py-2 bg-gradient-to-r from-pink-600 via-purple-700 to-blue-800 text-white rounded-lg shadow-lg hover:opacity-90 transition">
         Sign Up
       </button>
 

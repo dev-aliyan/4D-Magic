@@ -1,4 +1,3 @@
-// dashboard-layout.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../../../models/user';

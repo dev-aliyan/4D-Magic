@@ -98,7 +98,6 @@
   transition: all 0.3s ease;
 }
 
-/* Header */
 :host ::ng-deep .p-datatable-thead > tr > th {
   background: rgba(255, 255, 255, 0.05);
   color: #e2e8f0;
@@ -115,7 +114,6 @@
   color: #a78bfa;
 }
 
-/* Table Rows */
 :host ::ng-deep .p-datatable-tbody > tr {
   background: rgba(17, 24, 39, 0.3);
   color: #f1f5f9;
@@ -133,12 +131,10 @@
   font-size: 0.9rem;
 }
 
-/* Striped rows */
 :host ::ng-deep .p-datatable-tbody > tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.02);
 }
 
-/* Paginator */
 :host ::ng-deep .p-paginator {
   background: rgba(17, 24, 39, 0.4);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -166,7 +162,6 @@
   border-radius: 8px;
 }
 
-/* Scrollbars (if applicable) */
 :host ::ng-deep .p-datatable-wrapper::-webkit-scrollbar {
   width: 8px;
   height: 8px;

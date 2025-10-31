@@ -1,7 +1,6 @@
 <div class="w-full text-white">
   <div class="backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl shadow-2xl overflow-hidden ">
     <div class="p-8">
-      <!-- Header -->
       <div class="flex items-center gap-3 mb-8">
         <button class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition" (click)="onCancel()">
           <i class="pi pi-arrow-left text-white"></i>
@@ -10,13 +9,11 @@
       </div>
       <p class="text-gray-300 mb-6">Update issue details below</p>
 
-      <!-- Loading -->
       <div *ngIf="loading && !issue" class="text-center py-16">
         <p-progressSpinner [style]="{ width: '50px', height: '50px', margin: 'auto' }"></p-progressSpinner>
         <p class="text-gray-300 mt-4">Loading issue...</p>
       </div>
 
-      <!-- Not Found -->
       <div *ngIf="notFound && !loading" class="text-center py-12">
         <i class="pi pi-exclamation-circle text-4xl text-yellow-400 mb-3"></i>
         <h2 class="text-xl font-semibold text-white mb-2">Issue Not Found</h2>
@@ -24,7 +21,6 @@
         <button class="bg-gradient-to-r from-pink-600 via-purple-700 to-blue-800 text-white px-5 py-2 rounded-xl" (click)="goToDashboard()">Back to Dashboard</button>
       </div>
 
-      <!-- Permission Denied -->
       <div *ngIf="permissionDenied && !loading" class="text-center py-12">
         <i class="pi pi-lock text-4xl text-red-500 mb-3"></i>
         <h2 class="text-xl font-semibold text-white mb-2">Permission Denied</h2>
@@ -32,7 +28,6 @@
         <button class="bg-gradient-to-r from-pink-600 via-purple-700 to-blue-800 text-white px-5 py-2 rounded-xl" (click)="goToDashboard()">Back to Dashboard</button>
       </div>
 
-      <!-- Form Section -->
       <div *ngIf="issue && !notFound && !permissionDenied">
         <div class="bg-white/10 rounded-xl border border-white/10 p-4 mb-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-white">
           <div>
