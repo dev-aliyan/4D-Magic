@@ -1,5 +1,4 @@
-<div class="min-h-screen bg-gradient-to-br from-[#030A26] via-[#370F2F] to-[#821D3F] py-12 px-4 sm:px-6 lg:px-8 text-white">
-  <div class="max-w-4xl mx-auto">
+  <div class="mx-auto">
     
     <div class="flex items-center gap-3 mb-8">
       <button 
@@ -7,7 +6,7 @@
         (click)="goBack()">
         <i class="pi pi-arrow-left text-white"></i>
       </button>
-      <h1 class="text-4xl font-bold tracking-wide">Issue Details</h1>
+      <h1 class="text-4xl font-bold tracking-wide text-white">Issue Details</h1>
     </div>
 
     <div *ngIf="loading && !issue" class="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl p-12 text-center">
@@ -51,6 +50,7 @@
             <p class="text-gray-300 leading-relaxed whitespace-pre-wrap">{{ issue.description }}</p>
           </div>
 
+          <!-- Metadata Grid -->
           <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 pb-8 border-b border-white/10">
             <div>
               <p class="text-gray-400 text-xs uppercase tracking-wide mb-2 font-semibold">Created By</p>
@@ -96,29 +96,27 @@
 
         </div>
 
-        <!-- Action Buttons -->
         <div class="bg-white/5 border-t border-white/10 px-8 py-6 flex flex-wrap gap-4">
           <button 
             *ngIf="canEditIssue()"
-            class="px-6 py-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/30 rounded-lg font-semibold transition flex items-center gap-2"
+            class="px-6 py-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/30 rounded-lg font-semibold transition flex items-center gap-2 text-blue-200"
             (click)="editIssue()">
             <i class="pi pi-pencil"></i> Edit
           </button>
           <button 
             *ngIf="canDeleteIssue()"
-            class="px-6 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-400/30 rounded-lg font-semibold transition flex items-center gap-2"
+            class="px-6 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-400/30 rounded-lg font-semibold transition flex items-center gap-2 text-red-200"
             (click)="deleteIssue()">
             <i class="pi pi-trash"></i> Delete
           </button>
           <button 
-            class="px-6 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg font-semibold transition flex items-center gap-2 ml-auto"
+            class="px-6 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg font-semibold transition flex items-center gap-2 ml-auto text-neutral-200"
             (click)="goBack()">
             <i class="pi pi-arrow-left"></i> Back
           </button>
         </div>
       </div>
 
-      <!-- Activity Log Section -->
       <div class="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-8">
         <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
           <i class="pi pi-clock text-blue-400"></i> Activity Log
@@ -142,13 +140,32 @@
                 by <span class="font-medium">{{ log.userName }}</span>
               </p>
               <div *ngIf="log.changes && log.changes.length > 0" class="mt-2 text-sm text-gray-400">
-                <p *ngFor="let change of log.changes" class="ml-2">
-                  <i class="pi pi-arrow-right text-xs mr-1"></i>
-                  <span class="font-medium">{{ change.field }}</span>: 
-                  <span class="text-red-300">{{ change.oldValue }}</span> → 
-                  <span class="text-green-300">{{ change.newValue }}</span>
+                <p *ngFor="let change of log.changes" class="ml-2 text-white flex items-center gap-1">
+                  <i class="pi pi-circle-fill text-[4px] mr-1"></i>
+
+                  <span *ngIf="change.field === 'title'" class="font-medium">Title : </span>
+                  <span *ngIf="change.field === 'description'" class="font-medium">Description : </span>
+                  <span *ngIf="change.field === 'completedTime'" class="font-medium">Completed Time : </span>
+                  <span *ngIf="change.field === 'dueDate'" class="font-medium">Due Date : </span>
+
+                  <span class="text-red-300">
+                    {{
+                      change.field === 'dueDate'
+                        ? (change.oldValue | date: 'MMM d, y, h:mm a')
+                        : change.oldValue
+                    }}
+                  </span>
+                  →
+                  <span class="text-green-300">
+                    {{
+                      change.field === 'dueDate'
+                        ? (change.newValue | date: 'MMM d, y, h:mm a')
+                        : change.newValue
+                    }}
+                  </span>
                 </p>
               </div>
+
             </div>
           </div>
         </div>
@@ -163,4 +180,3 @@
 
     </div>
   </div>
-</div>

@@ -15,10 +15,12 @@ import { PasswordModule } from 'primeng/password';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
+import { DashboardLayoutComponent } from './components/layouts/dashboard-layout/dashboard-layout.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DashboardLayoutComponent
   ],
   imports: [
     BrowserModule,
