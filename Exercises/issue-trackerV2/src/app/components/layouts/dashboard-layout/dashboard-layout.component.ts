@@ -35,7 +35,7 @@ export class DashboardLayoutComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // ✅ Let the AuthGuard handle access. Just reflect the user in the header.
+   
     this.sub = this.userService.currentUser$.subscribe(u => {
       this.currentUser = u;
     });
@@ -54,8 +54,14 @@ export class DashboardLayoutComponent implements OnInit, OnDestroy {
   }
 
   isActiveRoute(route: string): boolean {
-    return this.router.url === route || this.router.url.startsWith(route + '/');
+    return this.router.isActive(route, {
+      paths: 'exact',
+      queryParams: 'ignored',
+      fragment: 'ignored',
+      matrixParams: 'ignored'
+    });
   }
+
 
   logout(): void {
     this.authService.logout();

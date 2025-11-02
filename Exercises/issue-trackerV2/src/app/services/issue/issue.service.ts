@@ -169,7 +169,7 @@ export class IssueService {
 
     const oldIssue = this.issues[index];
 
-    if (currentUser.role !== 'admin' && oldIssue.createdBy !== currentUser.id) {
+    if (currentUser.role !== 'admin' && oldIssue.createdBy !== currentUser.id && this.issues[index].assignedTo !== currentUser.id) {
       throw new Error('You do not have permission to update this issue');
     }
 

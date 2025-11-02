@@ -15,6 +15,9 @@ import { Issue } from '../../../models/issue';
 import { User } from '../../../models/user';
 import { IssueService } from '../../../services/issue/issue.service';
 import { UserService } from '../../../services/user/user.service';
+import { DialogModule } from 'primeng/dialog';
+import { EditIssueComponent } from '../../issue/edit-issue/edit-issue.component';
+import { ViewIssueComponent } from '../../issue/view-issue/view-issue.component';
 
 type StateKey = Issue['state'];
 
@@ -35,7 +38,10 @@ type StateKey = Issue['state'];
     TableModule,
     RippleModule,
     TooltipModule,
-    InputTextareaModule
+    InputTextareaModule,
+    DialogModule,
+    EditIssueComponent,
+    ViewIssueComponent
   ],
   styleUrls: ['./all-issues.component.css'],
   encapsulation: ViewEncapsulation.None,
@@ -48,6 +54,13 @@ export class AllIssuesComponent {
   stateFilter = signal<StateKey | 'all'>('all');
   myOnly = signal<boolean>(false);
   currentUser = signal<User | null>(null);
+
+  selectedIssueId = signal<string>('');
+  showViewModal = signal<boolean>(false);
+  showEditModal = signal<boolean>(false);
+
+
+  
 
   constructor(
     private issueSvc: IssueService,
@@ -108,6 +121,43 @@ export class AllIssuesComponent {
         return 'secondary';
     }
   }
+
+  openViewModal(issueId: string) {
+    this.selectedIssueId.set(issueId);
+    this.showViewModal.set(true);
+  }
+
+  openEditModal(issueId: string) {
+    this.selectedIssueId.set(issueId);
+    this.showEditModal.set(true);
+  }
+
+  closeViewModal() {
+    this.showViewModal.set(false);
+    this.selectedIssueId.set('');
+  }
+
+  closeEditModal() {
+    this.showEditModal.set(false);
+    this.selectedIssueId.set('');
+  }
+
+  onIssueUpdated() {
+    this.closeEditModal();
+    this.allIssues.set([...this.issueSvc.getAllIssues()]);
+  }
+
+  onIssueDeleted() {
+    this.closeViewModal();
+    this.allIssues.set([...this.issueSvc.getAllIssues()]);
+  }
+
+  onEditFromView(issueId: string) {
+    this.closeViewModal();
+    this.openEditModal(issueId);
+  }
+
+  
 
   clearFilters() {
     this.search.set('');

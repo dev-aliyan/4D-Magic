@@ -1,15 +1,6 @@
 <div class="flex items-center justify-between mb-4">
   <h2 class="text-white text-2xl font-semibold">Issue Tracker — Simplified Dashboard</h2>
-  <button
-    pButton
-    label="New Issue"
-    (click)="openCreateModal()"
-    class="px-5 py-2.5 rounded-xl text-white font-semibold tracking-wide 
-          bg-gradient-to-r from-fuchsia-500 via-violet-700 to-blue-700 
-          shadow-lg backdrop-blur-md border border-white/10 
-          hover:scale-[1.03] hover:shadow-fuchsia-500/40 
-          transition-all duration-300 active:scale-95"
-  ></button>
+  
 </div>
 
 <p-card styleClass="surface-card border-none">
@@ -123,11 +114,11 @@
 
             <div class="flex flex-col gap-1">
               <div class="text-white text-sm font-medium">{{ i.title }}</div>
-              <div class="text-neutral-400 text-xs">{{ i.description }}</div>
+              <div class="text-neutral-300 text-xs">{{ i.description }}</div>
             </div>
 
-            <div class="flex flex-col gap-1 text-xs text-neutral-500">
-              <div class="flex items-center gap-1">
+            <div class="flex flex-col gap-1 text-xs text-neutral-200">
+              <div class="flex items-center gap-1 ">
                 <i class="pi pi-user text-xs"></i>
                 <span>Created by: {{ createdByName(i.createdBy) }}</span>
               </div>
@@ -184,10 +175,10 @@
 
             <div class="flex flex-col gap-1">
               <div class="text-white text-sm font-medium">{{ i.title }}</div>
-              <div class="text-neutral-400 text-xs">{{ i.description }}</div>
+              <div class="text-neutral-300 text-xs">{{ i.description }}</div>
             </div>
 
-            <div class="flex flex-col gap-1 text-xs text-neutral-500">
+            <div class="flex flex-col gap-1 text-xs text-neutral-200">
               <div class="flex items-center gap-1">
                 <i class="pi pi-user text-xs"></i>
                 <span>Created by: {{ createdByName(i.createdBy) }}</span>
@@ -245,10 +236,10 @@
 
             <div class="flex flex-col gap-1">
               <div class="text-white text-sm font-medium">{{ i.title }}</div>
-              <div class="text-neutral-400 text-xs">{{ i.description }}</div>
+              <div class="text-neutral-300 text-xs">{{ i.description }}</div>
             </div>
 
-            <div class="flex flex-col gap-1 text-xs text-neutral-500">
+            <div class="flex flex-col gap-1 text-xs text-neutral-200">
               <div class="flex items-center gap-1">
                 <i class="pi pi-user text-xs"></i>
                 <span>Created by: {{ createdByName(i.createdBy) }}</span>
@@ -307,10 +298,10 @@
 
             <div class="flex flex-col gap-1">
               <div class="text-white text-sm font-medium">{{ i.title }}</div>
-              <div class="text-neutral-400 text-xs">{{ i.description }}</div>
+              <div class="text-neutral-300 text-xs">{{ i.description }}</div>
             </div>
 
-            <div class="flex flex-col gap-1 text-xs text-neutral-500">
+            <div class="flex flex-col gap-1 text-xs text-neutral-200">
               <div class="flex items-center gap-1">
                 <i class="pi pi-user text-xs"></i>
                 <span>Created by: {{ createdByName(i.createdBy) }}</span>
@@ -361,7 +352,7 @@
             <th style="width: 220px">Assignee</th>
             <th style="width: 120px">Est.</th>
             <th style="width: 140px">Due</th>
-            <th style="width: 120px"></th>
+            <th style="width: 140px">Actions</th>
           </tr>
         </ng-template>
 
@@ -385,6 +376,10 @@
     </p-card>
   </p-tabPanel>
 </p-tabView>
+
+
+
+
 
 <p-dialog
   [(visible)]="showCreateModal"
@@ -433,3 +428,16 @@
     (cancelled)="closeEditModal()"
   ></app-edit-issue>
 </p-dialog>
+
+<div class="fixed bottom-6 right-[100px] z-50">
+<button
+    pButton
+    icon="pi pi-plus"
+    (click)="openCreateModal()"
+    class="absolute p-3 w-20 h-20 overflow-hidden rounded-full text-white font-semibold tracking-wide bottom-0
+          bg-gradient-to-r from-fuchsia-500 via-violet-700 to-blue-700 
+          shadow-lg backdrop-blur-md 
+          hover:scale-[1.03] hover:shadow-fuchsia-500/40 
+          transition-all duration-300 active:scale-95"
+></button>
+</div>
