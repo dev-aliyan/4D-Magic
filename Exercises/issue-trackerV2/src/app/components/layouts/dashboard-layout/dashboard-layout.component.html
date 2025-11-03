@@ -28,13 +28,6 @@
         </span>
       </button>
     </nav>
-
-    <button
-      (click)="toggleSidebar()"
-      [ngClass]="sidebarCollapsed ? '-translate-x-1/2' : 'translate-x-full'"
-      class="absolute bottom-4  left-1/2  w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition">
-      <i [ngClass]="sidebarCollapsed ? 'pi pi-angle-right' : 'pi pi-angle-left'" class="text-white"></i>
-    </button>
   </aside>
 
   <div 
